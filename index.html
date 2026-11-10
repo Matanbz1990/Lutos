@@ -315,7 +315,7 @@ const KEYWORDS=[
   [/פארם|pharm|מרקחת|מכבי|כללית|מאוחדת|לאומית|רופא|מרפא|אופטיק|שיניים|דנטל|קופת חולים/i,"health"],
   [/איקאה|ikea|הום סנטר|אייס|ace |טמבור|רהיט|חברת החשמל|מי אביבים|ארנונה|גז |ועד בית|עיריי?ת|שטיח|כלי בית/i,"home"]];
 
-const S={settings:sampleSettings(),months:{[curKey]:sampleMonth()},view:"home",mk:curKey,demo:true,checking:true,loadFailed:false,saveFailed:false,q:"",fcat:"",loadingMonth:false,dl:null,gate:null,gateErr:"",gateBusy:false,perm:false,failedMonth:""};
+const S={settings:sampleSettings(),months:{[curKey]:sampleMonth()},view:"home",mk:curKey,demo:true,checking:true,loadFailed:false,saveFailed:false,q:"",fcat:"",loadingMonth:false,dl:null,gate:null,gateErr:"",gateBusy:false,perm:false,failedMonth:"",offerMigrate:false};
 let backend=null, IMP=null, lastSync=0;
 
 /* ---------- storage ---------- */
@@ -398,7 +398,9 @@ function paintCache(){
   if(cache&&cache.settings&&Array.isArray(cache.settings.cats)&&cache.mk===curKey&&(!SA||cache.owner===owner())){S.settings=Object.assign(emptySettings(),cache.settings);S.months={[curKey]:normMonth(cache.month)};S.demo=false}
 }
 function resetState(){
-  S.settings=sampleSettings();S.months={[curKey]:sampleMonth()};S.demo=true;S.checking=true;S.loadFailed=false;S.saveFailed=false;S.perm=false;S.failedMonth="";
+  if(SA){S.settings=emptySettings();S.months={[curKey]:{tx:[]}};S.demo=false}
+  else{S.settings=sampleSettings();S.months={[curKey]:sampleMonth()};S.demo=true}
+  S.offerMigrate=false;S.checking=true;S.loadFailed=false;S.saveFailed=false;S.perm=false;S.failedMonth="";
   S.mk=curKey;S.view="home";S.q="";S.fcat="";
   Object.keys(pending).forEach(k=>delete pending[k]);Object.keys(writing).forEach(k=>delete writing[k]);
 }
@@ -474,7 +476,7 @@ async function migrateLocal(){
     const data={};lotusKeys().forEach(k=>{const v=ls.get(k.slice(6));if(v)data[k.slice(6)]=v});
     await backend.replaceAll(data);
     lotusKeys().forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
-    await loadAll();toast("הנתונים הועברו לחשבון שלך");
+    S.offerMigrate=false;await loadAll();toast("הנתונים הועברו לחשבון שלך");
   }catch(e){S.checking=false;render();toast("ההעברה נכשלה. נסו שוב כשיש חיבור.")}
 }
 function sheetDelAccount(){
@@ -512,6 +514,11 @@ async function loadAll(){
       S.checking=false;
       if(stampRec())save("m-"+curKey);
       writeCache();
+    }else if(SA){
+      /* New account or new device: start empty and create the settings document right away. */
+      S.settings=emptySettings();S.months={[curKey]:{tx:[]}};S.demo=false;S.checking=false;
+      stampRec();save("settings");save("m-"+curKey);
+      S.offerMigrate=!!(USER&&localHasData()&&!ls.get("noMigrate"));
     }else if(!S.demo){S.settings=sampleSettings();S.months={[curKey]:sampleMonth()};S.demo=true;try{localStorage.removeItem("lotus:cache")}catch(e){}}
     lastSync=Date.now();
   }catch(e){S.loadFailed=true;S.perm=!!(e&&e.code==="permission-denied")}
@@ -578,7 +585,9 @@ function lotus(ratio){
 }
 function notes(){
   let h="";
-  if(S.demo)h+='<div class="note"><p><strong>אלה נתוני דוגמה.</strong> שום דבר לא נשמר עד שמתחילים עם הנתונים שלך.</p>'+(S.checking?'<span>בודק אם יש נתונים שמורים…</span>':S.loadFailed?"":'<button class="btn small" data-act="start">להתחיל עם הנתונים שלי</button>'+(SA&&USER&&localHasData()?'<button class="btn ghost small" data-act="migrate">להעביר לחשבון את מה ששמור במכשיר הזה</button>':""))+'</div>';
+  if(S.demo)h+='<div class="note"><p><strong>אלה נתוני דוגמה.</strong> שום דבר לא נשמר עד שמתחילים עם הנתונים שלך.</p>'+(S.checking?'<span>בודק אם יש נתונים שמורים…</span>':S.loadFailed?"":'<button class="btn small" data-act="start">להתחיל עם הנתונים שלי</button>')+'</div>';
+  if(SA&&S.checking&&!S.loadFailed)h+='<div class="note quiet"><p>טוען את הנתונים שלך…</p></div>';
+  if(S.offerMigrate&&!S.checking&&!S.loadFailed)h+='<div class="note"><p><strong>נמצאו נתונים שנשמרו במכשיר הזה בלי חשבון.</strong> אפשר להעביר אותם לחשבון שלך.</p><button class="btn small" data-act="migrate">להעביר לחשבון</button><button class="btn ghost small" data-act="no-migrate">לא, להתחיל מחדש</button></div>';
   if(S.loadFailed&&S.perm)h+='<div class="note quiet"><p>אין הרשאת גישה לנתונים בענן. אם האפליקציה הוקמה זה עתה, ייתכן שכללי הגישה של Firestore עוד לא הוגדרו.</p><button class="btn ghost small" data-act="retry">לנסות שוב</button></div>';
   else if(S.loadFailed)h+='<div class="note quiet"><p>לא הצלחנו להגיע לנתונים השמורים, ולכן אי אפשר לערוך כרגע. '+(S.demo?"":"מה שמוצג הוא העותק האחרון שנשמר במכשיר הזה.")+'</p><button class="btn ghost small" data-act="retry">לנסות שוב</button></div>';
   if(S.saveFailed)h+='<div class="note quiet"><p>השינוי האחרון לא נשמר. ייתכן שאין חיבור, או שאין לך הרשאת כתיבה בדף הזה.</p><button class="btn ghost small" data-act="resave">לנסות לשמור שוב</button></div>';
@@ -919,7 +928,7 @@ async function doRestore(){
   const data={settings:RESTORE.settings};RESTORE.months.forEach(m=>{data[m[0]]=m[1]});
   try{await backend.replaceAll(data)}
   catch(e){go.disabled=false;return formErr(backend.kind==="db"?"השחזור נכשל. צריך חיבור לאינטרנט.":"השחזור נכשל: אין מספיק מקום פנוי באחסון של הדפדפן.")}
-  ls.del("cache");RESTORE=null;sheet.close();S.mk=curKey;S.view="home";S.demo=true;
+  ls.del("cache");RESTORE=null;sheet.close();S.mk=curKey;S.view="home";S.offerMigrate=false;
   await loadAll();toast("הנתונים שוחזרו");
 }
 
@@ -1019,6 +1028,7 @@ document.addEventListener("click",e=>{
   else if(a==="local-mode"){ls.set("mode","local");enter(null)}
   else if(a==="signout"){if(AUTH)AUTH.signOut().catch(()=>toast("היציאה נכשלה. נסו שוב."))}
   else if(a==="migrate")migrateLocal();
+  else if(a==="no-migrate"){ls.set("noMigrate",1);S.offerMigrate=false;render()}
   else if(a==="del-account")sheetDelAccount();
   else if(a==="retry-month")ensureMonth(S.mk);
   else if(a==="backup")backupNow();
