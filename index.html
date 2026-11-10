@@ -65,11 +65,14 @@ button{cursor:pointer}
 
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 .wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.bar{display:flex;align-items:center;gap:12px;padding-block:12px 8px}
+.bar{display:flex;align-items:center;gap:8px;padding-block:12px 8px}
+.acct-btn{flex:none;background:var(--pond);color:var(--on-pond);font-weight:700;font-size:.95rem;text-transform:uppercase}
+.acct-btn:hover{background:var(--pond)}
+@media (max-width:359px){.brand span{display:none}}
 .brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:1.35rem;letter-spacing:.01em;direction:ltr}
 .brand svg{width:28px;height:28px}
 .month{margin-inline-start:auto;display:flex;align-items:center;gap:2px}
-.month b{min-width:7.2em;text-align:center;font-weight:500}
+.month b{min-width:6.2em;text-align:center;font-weight:500}
 .icon-btn{width:36px;height:36px;border-radius:50%;border:0;background:transparent;display:grid;place-items:center}
 .icon-btn:hover{background:var(--sunken)}
 .icon-btn svg{width:18px;height:18px}
@@ -238,6 +241,7 @@ window.LOTUS_FIREBASE={apiKey:"AIzaSyDJ1RLZHVlQMR-ybiFFnY9R1Q3-p5xluus",authDoma
         <b id="monthName"></b>
         <button class="icon-btn" data-act="next" aria-label="החודש הבא"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
       </div>
+      <button class="icon-btn acct-btn" id="acctBtn" data-act="account" aria-label="חשבון והתנתקות" hidden></button>
       <button class="btn small add-top" data-act="add">הוספת תנועה</button>
     </div>
     <nav class="tabs" id="tabs" aria-label="מסכים">
@@ -479,6 +483,10 @@ async function migrateLocal(){
     S.offerMigrate=false;await loadAll();toast("הנתונים הועברו לחשבון שלך");
   }catch(e){S.checking=false;render();toast("ההעברה נכשלה. נסו שוב כשיש חיבור.")}
 }
+function sheetAccount(){
+  if(!USER)return;
+  openSheet('<form data-form="account" novalidate><h3>חשבון</h3><p class="hint">מחובר כ-<span class="num">'+esc(USER.email||"חשבון Google")+'</span>. הנתונים שלך נשארים שמורים בחשבון הזה גם אחרי התנתקות, ואפשר לחזור אליהם בכל מכשיר.</p><div class="acts"><button class="btn" type="button" data-act="signout">התנתקות והחלפת חשבון</button><button class="btn ghost" type="button" data-act="close">סגירה</button></div></form>');
+}
 function sheetDelAccount(){
   openSheet('<form data-form="del-account" novalidate><h3>מחיקת החשבון והנתונים</h3><p class="hint">כל ההכנסות, ההוצאות וההגדרות שלך יימחקו מהענן לצמיתות, והחשבון שלך באפליקציה יימחק. אי אפשר לבטל את זה. אם רוצים לשמור עותק, מורידים קודם גיבוי.</p><p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit">למחוק הכול לצמיתות</button><button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
 }
@@ -674,13 +682,14 @@ function viewFixed(){
 }
 function accountHtml(){
   const last=ls.get("lastBackup"), bk=(S.demo||S.checking||S.loadFailed?"":'<button class="btn ghost small" data-act="backup">הורדת גיבוי</button>')+(S.checking||S.loadFailed?"":'<button class="btn ghost small" data-act="restore">שחזור מגיבוי</button>');
-  if(USER)return'<section><div class="sec-h"><h2>חשבון</h2></div><div class="panel acct"><p class="t2">מחובר כ-<span class="num">'+esc(USER.email||"חשבון Google")+'</span>. הנתונים נשמרים בענן ומסתנכרנים בין המכשירים שלך.</p><div class="acts"><button class="btn ghost small" data-act="signout">יציאה</button>'+bk+'</div><button class="link danger" data-act="del-account">מחיקת החשבון והנתונים</button></div></section>';
+  if(USER)return'<section><div class="sec-h"><h2>חשבון</h2></div><div class="panel acct"><p class="t2">מחובר כ-<span class="num">'+esc(USER.email||"חשבון Google")+'</span>. הנתונים נשמרים בענן ומסתנכרנים בין המכשירים שלך.</p><div class="acts"><button class="btn ghost small" data-act="signout">התנתקות</button>'+bk+'</div><button class="link danger" data-act="del-account">מחיקת החשבון והנתונים</button></div></section>';
   return'<section><div class="sec-h"><h2>שמירה וגיבוי</h2></div><div class="panel acct"><p class="t2">הנתונים נשמרים רק על המכשיר הזה. מחיקת האפליקציה או ניקוי נתוני הדפדפן מוחקים אותם, ולכן כדאי להוריד גיבוי מדי פעם. '+(last?"הגיבוי האחרון: "+shortDate(String(last))+".":"עוד לא נוצר גיבוי.")+'</p><div class="acts">'+(AUTH?'<button class="btn small" data-act="signin">כניסה עם Google לשמירה בענן</button>':"")+bk+'</div></div></section>';
 }
 function render(){
   document.body.classList.toggle("gated",!!S.gate);
   if(S.gate){$("#app").innerHTML=gateHtml();return}
   $("#monthName").textContent=monthLabel(S.mk);
+  const ab=$("#acctBtn");ab.hidden=!(SA&&USER);if(USER)ab.textContent=((USER.email||"").trim().charAt(0)||"•");
   document.querySelectorAll("#tabs button").forEach(b=>b.dataset.view===S.view?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
   const v={home:viewHome,tx:viewTx,cats:viewCats,fixed:viewFixed}[S.view]();
   $("#app").innerHTML=notes()+v;
@@ -694,7 +703,7 @@ function softRender(){
 
 /* ---------- sheets ---------- */
 const sheet=$("#sheet");
-function openSheet(html){sheet.innerHTML=html;if(!sheet.open)sheet.showModal();sheet.scrollTop=0;const f=sheet.querySelector("[data-focus]");if(f)setTimeout(()=>f.focus(),30)}
+function openSheet(html){sheet.innerHTML=html;if(!sheet.open)sheet.showModal();sheet.scrollTop=0;const f=sheet.querySelector("[data-focus]");if(f)f.focus()}
 let catTouched=false;
 function sheetTx(t){
   const e=t||{type:"exp",date:S.mk===curKey?todayStr:S.mk+"-01",cat:guessCat("")};
@@ -948,7 +957,7 @@ sheet.addEventListener("close",()=>{IMP=null});
 sheet.addEventListener("submit",e=>{
   e.preventDefault();
   const f=e.target, fd=new FormData(f), kind=f.dataset.form;
-  if(kind==="import-pick")return;
+  if(kind==="import-pick"||kind==="account")return;
   if(kind==="import")return commitImport();
   if(kind==="restore")return doRestore();
   if(kind==="del-account")return doDeleteAccount(f.querySelector("[type=submit]"));
@@ -1026,7 +1035,8 @@ document.addEventListener("click",e=>{
   else if(a==="export")exportCsv();
   else if(a==="signin")signIn();
   else if(a==="local-mode"){ls.set("mode","local");enter(null)}
-  else if(a==="signout"){if(AUTH)AUTH.signOut().catch(()=>toast("היציאה נכשלה. נסו שוב."))}
+  else if(a==="account")sheetAccount();
+  else if(a==="signout"){if(AUTH)AUTH.signOut().catch(()=>toast("ההתנתקות נכשלה. נסו שוב."))}
   else if(a==="migrate")migrateLocal();
   else if(a==="no-migrate"){ls.set("noMigrate",1);S.offerMigrate=false;render()}
   else if(a==="del-account")sheetDelAccount();
