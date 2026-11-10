@@ -77,7 +77,8 @@ button{cursor:pointer}
 .icon-btn:hover{background:var(--sunken)}
 .icon-btn svg{width:18px;height:18px}
 .add-top{display:none}
-.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+.tabs::-webkit-scrollbar{display:none}
 .tabs button{border:0;background:transparent;padding:8px 12px 10px;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
 .tabs button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
 
@@ -191,6 +192,34 @@ dialog .acts .btn:first-child{flex:1}
 .imp-row select{grid-column:2/-1;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:4px 8px;font-size:.88rem;max-width:100%}
 .imp-row.off{opacity:.55}
 
+.guide{display:flex;flex-direction:column;gap:12px}
+.lead{margin:0;color:var(--muted);max-width:62ch}
+.tip{background:var(--surface);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:start}
+.tip .ic{grid-row:1/3;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--cc) 16%,var(--surface));color:var(--cc)}
+.tip .ic svg{width:22px;height:22px}
+.tip h3{margin:0;font-size:1.02rem;font-weight:700}
+.tip p{margin:0;color:var(--muted);font-size:.95rem;max-width:62ch}
+.tip .yours{grid-column:2;margin-top:6px;color:var(--ink);background:var(--sunken);border-radius:10px;padding:8px 12px;font-size:.92rem}
+.article{background:var(--surface);border-radius:var(--r);padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+.article h3{margin:0;font-family:var(--display);font-size:1.15rem}
+.article p{margin:0;max-width:62ch}
+.article ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.article .term{font-weight:700}
+.idx{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.idx div{background:var(--sunken);border-radius:12px;padding:10px 12px;font-size:.9rem;color:var(--muted)}
+.idx b{display:block;color:var(--ink);direction:ltr;text-align:right}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.calc label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.calc .field{background:var(--bg);direction:ltr;text-align:right}
+.calc-out{background:var(--pond);color:var(--on-pond);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.calc-out .big{font-family:var(--display);font-weight:700;font-size:2rem;line-height:1.1}
+.calc-out .lbl{color:var(--on-pond-muted);font-size:.9rem}
+.calc-out .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.92rem;color:var(--on-pond-muted)}
+.calc-out .row b{color:var(--on-pond);font-weight:500}
+.split{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--pond-line)}
+.split i{display:block;height:100%}
+.split .a{background:var(--on-pond-muted)} .split .b{background:var(--petal)}
+.fineprint{font-size:.85rem;color:var(--muted);max-width:62ch;margin:0}
 .gated .top,.gated .fab{display:none}
 .gate{background:var(--pond);color:var(--on-pond);border-radius:24px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;margin-top:6vh}
 .gate h1{font-family:var(--display);font-size:2.4rem;line-height:1;margin:0;direction:ltr}
@@ -248,7 +277,9 @@ window.LOTUS_FIREBASE={apiKey:"AIzaSyDJ1RLZHVlQMR-ybiFFnY9R1Q3-p5xluus",authDoma
       <button data-view="home">תזרים</button>
       <button data-view="tx">תנועות</button>
       <button data-view="cats">קטגוריות</button>
-      <button data-view="fixed">הכנסות וקבועות</button>
+      <button data-view="fixed">הכנסות והוצאות קבועות</button>
+      <button data-view="tips">טיפים</button>
+      <button data-view="invest">השקעות</button>
     </nav>
   </div>
 </header>
@@ -433,7 +464,7 @@ async function enter(u){
   USER=u||null;S.gateBusy=false;
   if(sheet.open)sheet.close();
   if(USER)ls.set("mode","cloud");
-  else if(ls.get("mode")!=="local"){backend=null;S.gate="signin";render();return}
+  else{backend=null;S.gate="signin";render();return}
   S.gate=null;S.gateErr="";resetState();paintCache();render();window.scrollTo(0,0);
   const b=await connect();
   if(seq!==enterSeq)return;
@@ -469,8 +500,7 @@ function gateHtml(){
   return'<section class="gate">'+lotus(1)+'<h1>Lotus</h1><p>כמה נשאר לך להוציא החודש? מעקב פשוט אחרי הכנסות, הוצאות קבועות והוצאות היומיום.</p>'+
     '<button class="btn" data-act="signin"'+(S.gateBusy?" disabled":"")+'>'+(S.gateBusy?"מתחבר…":"כניסה עם Google")+'</button>'+
     (S.gateErr?'<p class="gerr" role="alert">'+esc(S.gateErr)+'</p>':"")+
-    '<p class="fine">הנתונים נשמרים בחשבון שלך בענן של Google (Firebase) ומסתנכרנים בין המכשירים שלך. משתמשים אחרים לא יכולים לראות אותם. למפעיל האפליקציה יש גישה טכנית למסד הנתונים.</p>'+
-    '<button class="link" data-act="local-mode">להמשיך בלי חשבון, עם שמירה במכשיר הזה בלבד</button></section>';
+    '<p class="fine">הנתונים נשמרים בחשבון שלך בענן של Google (Firebase) ומסתנכרנים בין המכשירים שלך. משתמשים אחרים לא יכולים לראות אותם. למפעיל האפליקציה יש גישה טכנית למסד הנתונים.</p>'+'</section>';
 }
 const localHasData=()=>{const l=ls.get("settings");return!!(l&&Array.isArray(l.cats))};
 async function migrateLocal(){
@@ -685,18 +715,75 @@ function accountHtml(){
   if(USER)return'<section><div class="sec-h"><h2>חשבון</h2></div><div class="panel acct"><p class="t2">מחובר כ-<span class="num">'+esc(USER.email||"חשבון Google")+'</span>. הנתונים נשמרים בענן ומסתנכרנים בין המכשירים שלך.</p><div class="acts"><button class="btn ghost small" data-act="signout">התנתקות</button>'+bk+'</div><button class="link danger" data-act="del-account">מחיקת החשבון והנתונים</button></div></section>';
   return'<section><div class="sec-h"><h2>שמירה וגיבוי</h2></div><div class="panel acct"><p class="t2">הנתונים נשמרים רק על המכשיר הזה. מחיקת האפליקציה או ניקוי נתוני הדפדפן מוחקים אותם, ולכן כדאי להוריד גיבוי מדי פעם. '+(last?"הגיבוי האחרון: "+shortDate(String(last))+".":"עוד לא נוצר גיבוי.")+'</p><div class="acts">'+(AUTH?'<button class="btn small" data-act="signin">כניסה עם Google לשמירה בענן</button>':"")+bk+'</div></div></section>';
 }
+const IC={
+  shield:'<path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Z"/>',
+  repeat:'<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+  card:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+  bank:'<path d="M3 10 12 4l9 6"/><path d="M5 10v8M10 10v8M14 10v8M19 10v8M3 20h18"/>',
+  gift:'<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18M12 9v12"/><path d="M12 9c-2-4-7-3-5 0M12 9c2-4 7-3 5 0"/>',
+  eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>'};
+const icon=n=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+"</svg>";
+const tip=(ic,c,title,body,yours)=>'<div class="tip" style="--cc:var(--c'+c+')"><span class="ic">'+icon(ic)+"</span><h3>"+title+"</h3><p>"+body+"</p>"+(yours?'<p class="yours">'+yours+"</p>":"")+"</div>";
+function viewTips(){
+  const c=calc(curKey), has=!S.demo&&c.baseInc>0, monthly=Math.max(0,c.baseInc-c.saving);
+  const rate=has&&c.baseInc>0?Math.round(c.saving/c.baseInc*100):0;
+  const subs=S.settings.fixed.length;
+  return'<section class="guide"><div class="sec-h" style="margin:0"><h2>טיפים להתנהלות כלכלית</h2></div><p class="lead">כמה הרגלים פשוטים שעושים את רוב העבודה. חלק מהטיפים מחושבים לפי הנתונים שהזנת.</p>'+
+  tip("shield",1,"קודם כול, כרית ביטחון","לפני שמשקיעים או מגדילים הוצאות, כדאי שיהיה בצד סכום ששווה ל-3 עד 6 חודשי מחיה, במקום נזיל כמו פיקדון קצר או קרן כספית. הוא מה שמונע מתקלה ברכב או מחודש בלי עבודה להפוך להלוואה.",has&&monthly>0?"לפי הנתונים שלך, הוצאות המחיה החודשיות הן בערך "+money(monthly)+", כלומר כרית של "+money(monthly*3)+" עד "+money(monthly*6)+".":"")+
+  tip("repeat",2,"לשלם לעצמך קודם","חיסכון שנשאר ״אם יישאר משהו בסוף החודש״ כמעט אף פעם לא נשאר. הוראת קבע שיוצאת ביום המשכורת הופכת את החיסכון להוצאה קבועה, ומה שנשאר אחריה הוא התקציב האמיתי.",has?(c.saving>0?"כרגע מוגדר אצלך חיסכון של "+money(c.saving)+" בחודש, שהם "+rate+"% מההכנסה הקבועה.":"עוד לא הגדרת חיסכון חודשי. אפשר להגדיר אותו במסך ״הכנסות והוצאות קבועות״."):"")+
+  tip("card",7,"חובות יקרים לפני השקעות","מינוס בעו״ש, אשראי מתגלגל והלוואות בריבית דו-ספרתית עולים בדרך כלל יותר ממה שהשקעה סבירה מניבה. סגירת חוב כזה היא תשואה בטוחה, ולכן היא באה לפני כל השקעה.")+
+  tip("list",3,"ביקורת שנתית על ההוצאות הקבועות","פעם בשנה עוברים על כל הוראות הקבע: ביטוחים כפולים, מנויים שלא בשימוש, חבילות סלולר ואינטרנט ישנות ודמי ניהול בחסכונות. שיחת טלפון אחת לכל ספק חוסכת לא פעם מאות שקלים בשנה.",!S.demo&&subs?"יש לך "+subs+" הוצאות קבועות בסך "+money(c.fixed)+" בחודש, שהם "+money(c.fixed*12)+" בשנה.":"")+
+  tip("eye",5,"מבט שבועי במקום חשבון נפש חודשי","חמש דקות פעם בשבוע במסך ״תזרים״ מספיקות כדי לראות אם השבוע חרג מהקצב, ולתקן בשבוע שאחריו. בסוף החודש כבר מאוחר מדי לשנות משהו.")+
+  tip("cal",4,"הוצאות גדולות שידועות מראש","ביטוח רכב, טסט, חגים, חופשה ומתנות אינם הפתעה. מחלקים את הסכום השנתי ל-12 ומפרישים אותו כל חודש כהוצאה קבועה, כדי שהחודש שבו הם מגיעים לא ישבור את התקציב.")+
+  tip("bank",6,"כסף שלא עובד בעו״ש","יתרה גדולה בעו״ש בדרך כלל לא מקבלת ריבית ונשחקת מול האינפלציה. כסף שצריך בשנה הקרובה מתאים לפיקדון או לקרן כספית, וכסף לטווח של שנים רבות יכול להתאים להשקעה.")+
+  tip("gift",1,"הטבות מס שכבר מגיעות לך","קרן השתלמות, הפקדות לפנסיה ולקופת גמל ונקודות זיכוי הן כסף שהמדינה והמעסיק מוסיפים. כדאי לוודא שמנצלים אותן במלואן, ולבדוק את דמי הניהול בכל אחת מהן.")+
+  '<p class="fineprint">המידע כללי ואינו מהווה ייעוץ פיננסי, פנסיוני או ייעוץ מס המותאם לנתונים האישיים שלך.</p></section>';
+}
+function viewInvest(){
+  const dep=!S.demo&&+S.settings.saving>0?Math.round(+S.settings.saving):1000;
+  return'<section class="guide"><div class="sec-h" style="margin:0"><h2>השקעה במדדים</h2></div><p class="lead">הסבר קצר על הדרך הפשוטה והזולה ביותר להשקיע לטווח ארוך, בלי לבחור מניות.</p>'+
+  '<div class="article"><h3>מה זה מדד</h3><p>מדד הוא רשימה של ניירות ערך שנבחרים לפי כלל קבוע, למשל ״500 החברות הגדולות בארה״ב״. מי שמשקיע במדד קונה חלק קטן מכל החברות שבו בבת אחת, במקום להמר על חברה אחת.</p><div class="idx"><div><b>S&amp;P 500</b>500 החברות הגדולות בארה״ב</div><div><b>MSCI World</b>כ-1,300 חברות ממדינות מפותחות</div><div><b>ת״א 125</b>125 החברות הגדולות בבורסה בתל אביב</div><div><b>Nasdaq 100</b>100 חברות גדולות, בעיקר טכנולוגיה</div></div></div>'+
+  '<div class="article"><h3>למה דווקא מדדים</h3><ul><li><span class="term">פיזור.</span> נפילה של חברה אחת כמעט לא מורגשת כשמחזיקים מאות חברות.</li><li><span class="term">עלות נמוכה.</span> אין מנהל שבוחר מניות, ולכן דמי הניהול נמוכים בהרבה מאלה של קרן מנוהלת.</li><li><span class="term">קשה לנצח אותם.</span> מחקרים חוזרים מראים שרוב הקרנות המנוהלות משיגות לאורך שנים תשואה נמוכה מהמדד שלהן, אחרי דמי ניהול.</li><li><span class="term">פשטות.</span> לא צריך לעקוב אחרי חדשות או דוחות כספיים.</li></ul></div>'+
+  '<div class="article"><h3>איך משקיעים בפועל</h3><ul><li><span class="term">קרן מחקה.</span> קרן נאמנות שעוקבת אחרי מדד ונקנית פעם ביום דרך הבנק או בית ההשקעות.</li><li><span class="term">קרן סל (ETF).</span> עוקבת אחרי מדד ונסחרת בבורסה לאורך היום, כמו מניה.</li><li><span class="term">מסלול מחקה מדד.</span> בקרן השתלמות, בקופת גמל להשקעה ובפנסיה אפשר לרוב לבחור מסלול שעוקב אחרי מדד, בלי לפתוח חשבון מסחר.</li></ul><p>את הקרנות קונים דרך חשבון מסחר בבנק או בבית השקעות. ההבדל ביניהם הוא בעיקר בעמלות.</p></div>'+
+  '<div class="article"><h3>מה לבדוק לפני שבוחרים קרן</h3><ul><li><span class="term">דמי ניהול.</span> ההפרש בין 0.1% ל-1% בשנה מצטבר לאורך עשרות שנים לסכום גדול. המחשבון למטה מראה כמה.</li><li><span class="term">עמלות החשבון.</span> עמלת קנייה ומכירה, דמי משמרת ועמלת המרת מטבע.</li><li><span class="term">איזה מדד.</span> מדד רחב ומוכר עדיף על מדד צר או אופנתי.</li><li><span class="term">חשיפה למטבע.</span> קרן על מדד בחו״ל חשופה בדרך כלל גם לשער הדולר, אלא אם היא מנטרלת מטבע.</li><li><span class="term">מס.</span> בישראל הרווח הריאלי ממכירת ניירות ערך חייב במס רווחי הון, 25% ברוב המקרים. כדאי לוודא את השיעור העדכני ואת הכללים לגבי דיבידנדים.</li></ul></div>'+
+  '<div class="article"><h3>הסיכונים</h3><p>מדד מניות יכול לרדת בעשרות אחוזים. ה-S&amp;P 500 ירד בכ-37% בשנת 2008 ובכ-18% בשנת 2022. לאורך כמאה שנה התשואה הממוצעת שלו הייתה בסביבות 10% בשנה לפני אינפלציה, אבל תשואות העבר אינן מבטיחות את העתיד, ואף שנה בודדת לא נראית כמו הממוצע.</p><ul><li>משקיעים רק כסף שלא יהיה נחוץ בעשר השנים הקרובות לפחות.</li><li>הפקדה חודשית קבועה עדיפה על ניסיון לתזמן את השוק.</li><li>ההפסד הגדול ביותר נגרם בדרך כלל ממכירה בזמן ירידה, לא מהירידה עצמה.</li></ul></div>'+
+  '<div class="article"><h3>מחשבון ריבית דריבית</h3><p>כמה מצטבר מהפקדה חודשית קבועה, ומה דמי הניהול עושים לתוצאה. התשואה היא הנחה שלך, לא תחזית.</p><div class="calc"><label>הפקדה חודשית (₪)<input class="field" id="inv-dep" inputmode="decimal" autocomplete="off" value="'+dep+'"></label><label>מספר שנים<input class="field" id="inv-years" inputmode="numeric" autocomplete="off" value="20"></label><label>תשואה שנתית משוערת (%)<input class="field" id="inv-rate" inputmode="decimal" autocomplete="off" value="6"></label><label>דמי ניהול שנתיים (%)<input class="field" id="inv-fee" inputmode="decimal" autocomplete="off" value="0.2"></label></div><div class="calc-out" id="inv-out" aria-live="polite"></div></div>'+
+  '<p class="fineprint">המידע כללי ונועד להסבר בלבד. הוא אינו ייעוץ השקעות או שיווק השקעות ואינו מתחשב בנתונים ובצרכים האישיים שלך. לפני השקעה כדאי להתייעץ עם יועץ השקעות בעל רישיון.</p></section>';
+}
+function futureValue(dep,years,ratePct){
+  const n=Math.round(years*12), r=Math.pow(1+ratePct/100,1/12)-1;
+  return Math.abs(r)<1e-9?dep*n:dep*(Math.pow(1+r,n)-1)/r;
+}
+function calcInvest(){
+  const out=$("#inv-out");if(!out)return;
+  const num=(id,max)=>{const v=parseFloat(String($(id).value).replace(/[,\s₪%]/g,""));return isFinite(v)&&v>=0?Math.min(v,max):NaN};
+  const dep=num("#inv-dep",1e7), years=num("#inv-years",60), rate=num("#inv-rate",30), fee=num("#inv-fee",10);
+  if([dep,years,rate,fee].some(isNaN)||!dep||!years){out.innerHTML='<span class="lbl">ממלאים הפקדה חודשית ומספר שנים כדי לראות את התוצאה.</span>';return}
+  const paid=dep*Math.round(years*12), net=futureValue(dep,years,rate-fee), gross=futureValue(dep,years,rate), gain=Math.max(0,net-paid);
+  const pa=net>0?Math.min(100,paid/net*100):100;
+  out.innerHTML='<div><div class="lbl">הסכום שיצטבר אחרי '+(Math.round(years*10)/10)+' שנים</div><div class="big">'+money(Math.round(net))+'</div></div>'+
+    '<div class="split" role="img" aria-label="חלוקה בין הפקדות לרווח"><i class="a" style="width:'+pa.toFixed(1)+'%"></i><i class="b" style="width:'+(100-pa).toFixed(1)+'%"></i></div>'+
+    '<div class="row"><span>מתוכו הפקדות <b>'+money(paid)+'</b></span><span>רווח מצטבר <b>'+money(Math.round(gain))+'</b></span></div>'+
+    (fee>0?'<div class="row"><span>דמי הניהול גרעו מהתוצאה <b>'+money(Math.round(gross-net))+'</b></span></div>':"");
+}
 function render(){
   document.body.classList.toggle("gated",!!S.gate);
   if(S.gate){$("#app").innerHTML=gateHtml();return}
   $("#monthName").textContent=monthLabel(S.mk);
   const ab=$("#acctBtn");ab.hidden=!(SA&&USER);if(USER)ab.textContent=((USER.email||"").trim().charAt(0)||"•");
   document.querySelectorAll("#tabs button").forEach(b=>b.dataset.view===S.view?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
-  const v={home:viewHome,tx:viewTx,cats:viewCats,fixed:viewFixed}[S.view]();
+  const v={home:viewHome,tx:viewTx,cats:viewCats,fixed:viewFixed,tips:viewTips,invest:viewInvest}[S.view]();
   $("#app").innerHTML=notes()+v;
+  const cur=document.querySelector('#tabs [aria-current="page"]'),tb=$("#tabs");
+  if(cur&&tb.scrollWidth>tb.clientWidth){const a=cur.getBoundingClientRect(),b=tb.getBoundingClientRect();if(a.left<b.left+8||a.right>b.right-8)tb.scrollLeft+=a.left-b.left-(b.width-a.width)/2}
+  if(S.view==="invest")calcInvest();
 }
 /* Background refreshes must not steal focus from the search box. */
 function softRender(){
   const a=document.activeElement;
+  if(a&&/^inv-/.test(a.id||""))return;
   if(a&&a.id==="search"){const pos=a.selectionStart;render();const n=$("#search");if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}
   else render();
 }
@@ -1034,7 +1121,6 @@ document.addEventListener("click",e=>{
   else if(a==="import"){if(S.demo)return toast("כדי לייבא, קודם לוחצים על ״להתחיל עם הנתונים שלי״");sheetImport()}
   else if(a==="export")exportCsv();
   else if(a==="signin")signIn();
-  else if(a==="local-mode"){ls.set("mode","local");enter(null)}
   else if(a==="account")sheetAccount();
   else if(a==="signout"){if(AUTH)AUTH.signOut().catch(()=>toast("ההתנתקות נכשלה. נסו שוב."))}
   else if(a==="migrate")migrateLocal();
@@ -1051,11 +1137,13 @@ document.addEventListener("click",e=>{
   else if(a==="start"){S.demo=false;S.settings=emptySettings();S.months={[curKey]:{tx:[]}};S.mk=curKey;S.view="home";stampRec();save("settings");save("m-"+curKey);render();sheetRec("incomes",null)}
 });
 document.addEventListener("input",e=>{
+  if(/^inv-/.test(e.target.id))return calcInvest();
   if(e.target.id!=="search")return;
   S.q=e.target.value;
   const cur=$("#txlist");if(cur)cur.innerHTML=txListHtml();
 });
 
+window.__lotus={S,extractRows,parseCSV,parseDate,parseNum,calc,guessCat,futureValue};
 boot();
 })();
 </script>
