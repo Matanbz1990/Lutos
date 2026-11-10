@@ -188,6 +188,21 @@ dialog .acts .btn:first-child{flex:1}
 .imp-row select{grid-column:2/-1;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:4px 8px;font-size:.88rem;max-width:100%}
 .imp-row.off{opacity:.55}
 
+.gated .top,.gated .fab{display:none}
+.gate{background:var(--pond);color:var(--on-pond);border-radius:24px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;margin-top:6vh}
+.gate h1{font-family:var(--display);font-size:2.4rem;line-height:1;margin:0;direction:ltr}
+.gate p{margin:0;max-width:34ch;text-wrap:balance}
+.gate .sub{color:var(--on-pond-muted)}
+.gate .fine{color:var(--on-pond-muted);font-size:.82rem;max-width:42ch}
+.gate .flower{width:150px;height:auto}
+.gate .btn{background:var(--on-pond);color:var(--pond);padding:12px 26px;font-size:1rem}
+.gate .link{color:var(--on-pond);text-decoration:underline;font-size:.9rem}
+.gate .gerr{color:var(--petal);font-size:.9rem}
+.acct{padding-block:14px}
+.acct p{margin:0 0 12px}
+.acct .acts{margin:0}
+.acct .acts .btn{flex:none}
+.acct .link.danger{color:var(--bad);margin-top:14px;font-size:.9rem}
 @media (min-width:700px){
   .add-top{display:inline-block}
   .fab{display:none}
@@ -202,7 +217,14 @@ dialog .acts .btn:first-child{flex:1}
 </style>
 </head>
 <body>
-<script>window.LOTUS_STANDALONE=true;window.LOTUS_XLSX_SRC="vendor/xlsx.full.min.js";</script>
+<script src="vendor/firebase-app-compat.js"></script>
+<script src="vendor/firebase-auth-compat.js"></script>
+<script src="vendor/firebase-firestore-compat.js"></script>
+<script>
+window.LOTUS_STANDALONE=true;window.LOTUS_XLSX_SRC="vendor/xlsx.full.min.js";
+/* Firebase web config. This identifies the project and is meant to be public; access is enforced by firestore.rules. */
+window.LOTUS_FIREBASE={apiKey:"AIzaSyDJ1RLZHVlQMR-ybiFFnY9R1Q3-p5xluus",authDomain:"lutos-c050a.firebaseapp.com",projectId:"lutos-c050a",storageBucket:"lutos-c050a.firebasestorage.app",messagingSenderId:"1047006095362",appId:"1:1047006095362:web:ca9c2d8f81087b09f7df1b"};
+</script>
 
 <header class="top">
   <div class="wrap">
@@ -237,6 +259,8 @@ dialog .acts .btn:first-child{flex:1}
 "use strict";
 document.documentElement.lang="he"; document.documentElement.dir="rtl";
 const SA=!!window.LOTUS_STANDALONE;
+const FB=SA&&window.firebase&&window.LOTUS_FIREBASE?window.firebase:null;
+let AUTH=null, USER=null, enterSeq=0;
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -291,11 +315,11 @@ const KEYWORDS=[
   [/פארם|pharm|מרקחת|מכבי|כללית|מאוחדת|לאומית|רופא|מרפא|אופטיק|שיניים|דנטל|קופת חולים/i,"health"],
   [/איקאה|ikea|הום סנטר|אייס|ace |טמבור|רהיט|חברת החשמל|מי אביבים|ארנונה|גז |ועד בית|עיריי?ת|שטיח|כלי בית/i,"home"]];
 
-const S={settings:sampleSettings(),months:{[curKey]:sampleMonth()},view:"home",mk:curKey,demo:true,checking:true,loadFailed:false,saveFailed:false,q:"",fcat:"",loadingMonth:false,dl:null};
+const S={settings:sampleSettings(),months:{[curKey]:sampleMonth()},view:"home",mk:curKey,demo:true,checking:true,loadFailed:false,saveFailed:false,q:"",fcat:"",loadingMonth:false,dl:null,gate:null,gateErr:"",gateBusy:false,perm:false,failedMonth:""};
 let backend=null, IMP=null, lastSync=0;
 
 /* ---------- storage ---------- */
-const ls={get(k){try{return JSON.parse(localStorage.getItem("lotus:"+k))}catch(e){return null}},set(k,d){try{localStorage.setItem("lotus:"+k,JSON.stringify(d))}catch(e){}}};
+const ls={get(k){try{return JSON.parse(localStorage.getItem("lotus:"+k))}catch(e){return null}},set(k,d){try{localStorage.setItem("lotus:"+k,JSON.stringify(d))}catch(e){}},del(k){try{localStorage.removeItem("lotus:"+k)}catch(e){}}};
 const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej({code:"timeout"}),ms))]);
 async function connect(){
   try{
@@ -310,11 +334,39 @@ async function connect(){
     }
   }catch(e){}
   if(SA)S.dl={save:async({filename,data})=>{const u=URL.createObjectURL(new Blob([data]));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000);return{status:"saved"}}};
-  return{kind:"local",get:async k=>ls.get(k),set:async(k,d)=>{localStorage.setItem("lotus:"+k,JSON.stringify(d))}};
+  if(SA&&FB&&USER)return fbBackend(USER.uid);
+  return localBackend();
+}
+function localBackend(){
+  return{kind:"local",get:async k=>ls.get(k),set:async(k,d)=>{localStorage.setItem("lotus:"+k,JSON.stringify(d))},
+    async all(){const o={};lotusKeys().forEach(k=>o[k.slice(6)]=ls.get(k.slice(6)));return o},
+    async replaceAll(data){lotusKeys().forEach(k=>localStorage.removeItem(k));Object.keys(data).forEach(k=>localStorage.setItem("lotus:"+k,JSON.stringify(data[k])))}};
+}
+/* Cloud storage for the installed app: one private set of documents per signed-in Google account. */
+function fbBackend(uid){
+  const fs=FB.firestore(), col=fs.collection("users").doc(uid).collection("docs");
+  const onErr=e=>{if(!USER||USER.uid!==uid)return;if(e&&e.code==="permission-denied")S.perm=true;S.saveFailed=true;softRender()};
+  return{kind:"db",uid,
+    async get(k){
+      let s;
+      try{s=await withTimeout(col.doc(k).get(),7000)}
+      catch(e){if(e&&e.code==="permission-denied")throw e;s=await col.doc(k).get({source:"cache"})}
+      return s.exists?clone(s.data()):null;
+    },
+    /* The local write lands at once and is queued for the server, so saving works offline; a server refusal arrives later through onErr. */
+    set(k,d){col.doc(k).set(d).catch(onErr);return Promise.resolve()},
+    async all(){const q=await withTimeout(col.get({source:"server"}),12000);const o={};q.forEach(d=>{o[d.id]=clone(d.data())});return o},
+    async replaceAll(data){
+      const q=await withTimeout(col.get({source:"server"}),12000), b=fs.batch();
+      q.forEach(d=>{if(!(d.id in data))b.delete(d.ref)});
+      Object.keys(data).forEach(k=>b.set(col.doc(k),data[k]));
+      await withTimeout(b.commit(),15000);
+    }};
 }
 const pending={},writing={};
 const busyWriting=()=>Object.keys(writing).some(k=>writing[k]||pending[k]);
-function writeCache(){ls.set("cache",{settings:S.settings,month:S.months[curKey]||{tx:[]},mk:curKey})}
+const owner=()=>USER?USER.uid:"local";
+function writeCache(){ls.set("cache",{settings:S.settings,month:S.months[curKey]||{tx:[]},mk:curKey,owner:owner()})}
 function save(key){
   if(S.demo||!backend||S.loadFailed)return;
   if(key===("m-"+curKey)||key==="settings")writeCache();
@@ -341,18 +393,111 @@ function stampRec(){
   if(JSON.stringify(m.rec)!==JSON.stringify(r)){m.rec=r;return true}
   return false;
 }
-async function boot(){
+function paintCache(){
   const cache=ls.get("cache");
-  if(cache&&cache.settings&&Array.isArray(cache.settings.cats)&&cache.mk===curKey){S.settings=Object.assign(emptySettings(),cache.settings);S.months={[curKey]:normMonth(cache.month)};S.demo=false}
-  render();
+  if(cache&&cache.settings&&Array.isArray(cache.settings.cats)&&cache.mk===curKey&&(!SA||cache.owner===owner())){S.settings=Object.assign(emptySettings(),cache.settings);S.months={[curKey]:normMonth(cache.month)};S.demo=false}
+}
+function resetState(){
+  S.settings=sampleSettings();S.months={[curKey]:sampleMonth()};S.demo=true;S.checking=true;S.loadFailed=false;S.saveFailed=false;S.perm=false;S.failedMonth="";
+  S.mk=curKey;S.view="home";S.q="";S.fcat="";
+  Object.keys(pending).forEach(k=>delete pending[k]);Object.keys(writing).forEach(k=>delete writing[k]);
+}
+async function boot(){
+  if(SA&&FB){
+    try{FB.initializeApp(window.LOTUS_FIREBASE);try{FB.firestore().enablePersistence({synchronizeTabs:true}).catch(()=>{})}catch(e){}AUTH=FB.auth()}catch(e){AUTH=null}
+    if(AUTH){
+      S.gate="loading";render();
+      let first=true;
+      const t=setTimeout(()=>{if(first){first=false;enter(null)}},8000);
+      AUTH.onAuthStateChanged(u=>{
+        if(first){first=false;clearTimeout(t);enter(u);return}
+        if(u&&(!USER||USER.uid!==u.uid))enter(u);
+        else if(!u&&USER)leave();
+      });
+      return;
+    }
+  }
+  paintCache();render();
   backend=await connect();
   await loadAll();
 }
+/* Open the app for a signed-in user, for device-only mode, or show the sign-in screen. */
+async function enter(u){
+  const seq=++enterSeq;
+  USER=u||null;S.gateBusy=false;
+  if(sheet.open)sheet.close();
+  if(USER)ls.set("mode","cloud");
+  else if(ls.get("mode")!=="local"){backend=null;S.gate="signin";render();return}
+  S.gate=null;S.gateErr="";resetState();paintCache();render();window.scrollTo(0,0);
+  const b=await connect();
+  if(seq!==enterSeq)return;
+  backend=b;
+  await loadAll();
+}
+function leave(){
+  enterSeq++;USER=null;backend=null;ls.del("cache");ls.del("mode");
+  if(sheet.open)sheet.close();
+  resetState();S.checking=false;S.gate="signin";render();window.scrollTo(0,0);
+}
+function signIn(){
+  if(!AUTH||S.gateBusy)return;
+  S.gateErr="";S.gateBusy=true;if(S.gate)render();
+  const p=new FB.auth.GoogleAuthProvider();p.setCustomParameters({prompt:"select_account"});
+  AUTH.signInWithPopup(p).catch(e=>{
+    const c=(e&&e.code)||"";
+    if(c==="auth/popup-blocked"||c==="auth/operation-not-supported-in-this-environment")return AUTH.signInWithRedirect(p);
+    throw e;
+  }).catch(e=>{
+    const c=(e&&e.code)||"";
+    const msg=c==="auth/popup-closed-by-user"||c==="auth/cancelled-popup-request"||c==="auth/user-cancelled"?"":
+      c==="auth/unauthorized-domain"?"הכתובת הזו עוד לא מורשית בפרויקט Firebase (Authorized domains).":
+      c==="auth/operation-not-allowed"?"כניסה עם Google עוד לא הופעלה בפרויקט Firebase.":
+      c==="auth/network-request-failed"?"אין חיבור לאינטרנט. הכניסה דורשת חיבור.":
+      "הכניסה נכשלה. אפשר לנסות שוב."+(c?" ("+c+")":"");
+    S.gateErr=msg;S.gateBusy=false;
+    if(S.gate)render();else if(msg)toast(msg);
+  });
+}
+function gateHtml(){
+  if(S.gate==="loading")return'<section class="gate">'+lotus(1)+'<h1>Lotus</h1><p class="sub">טוען…</p></section>';
+  return'<section class="gate">'+lotus(1)+'<h1>Lotus</h1><p>כמה נשאר לך להוציא החודש? מעקב פשוט אחרי הכנסות, הוצאות קבועות והוצאות היומיום.</p>'+
+    '<button class="btn" data-act="signin"'+(S.gateBusy?" disabled":"")+'>'+(S.gateBusy?"מתחבר…":"כניסה עם Google")+'</button>'+
+    (S.gateErr?'<p class="gerr" role="alert">'+esc(S.gateErr)+'</p>':"")+
+    '<p class="fine">הנתונים נשמרים בחשבון שלך בענן של Google (Firebase) ומסתנכרנים בין המכשירים שלך. משתמשים אחרים לא יכולים לראות אותם. למפעיל האפליקציה יש גישה טכנית למסד הנתונים.</p>'+
+    '<button class="link" data-act="local-mode">להמשיך בלי חשבון, עם שמירה במכשיר הזה בלבד</button></section>';
+}
+const localHasData=()=>{const l=ls.get("settings");return!!(l&&Array.isArray(l.cats))};
+async function migrateLocal(){
+  if(!backend||backend.kind!=="db"||S.checking)return;
+  S.checking=true;render();
+  try{
+    const data={};lotusKeys().forEach(k=>{const v=ls.get(k.slice(6));if(v)data[k.slice(6)]=v});
+    await backend.replaceAll(data);
+    lotusKeys().forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+    await loadAll();toast("הנתונים הועברו לחשבון שלך");
+  }catch(e){S.checking=false;render();toast("ההעברה נכשלה. נסו שוב כשיש חיבור.")}
+}
+function sheetDelAccount(){
+  openSheet('<form data-form="del-account" novalidate><h3>מחיקת החשבון והנתונים</h3><p class="hint">כל ההכנסות, ההוצאות וההגדרות שלך יימחקו מהענן לצמיתות, והחשבון שלך באפליקציה יימחק. אי אפשר לבטל את זה. אם רוצים לשמור עותק, מורידים קודם גיבוי.</p><p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit">למחוק הכול לצמיתות</button><button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
+}
+async function doDeleteAccount(btn){
+  if(!USER||!backend||backend.kind!=="db")return;
+  btn.disabled=true;
+  try{await backend.replaceAll({})}catch(e){btn.disabled=false;return formErr("המחיקה נכשלה. צריך חיבור לאינטרנט.")}
+  ls.del("cache");
+  try{await USER.delete()}
+  catch(e){
+    await AUTH.signOut().catch(()=>{});
+    toast("הנתונים נמחקו. כדי למחוק גם את רישום החשבון צריך להיכנס מחדש ולמחוק שוב.");return;
+  }
+  toast("החשבון והנתונים נמחקו");
+}
 async function loadAll(){
-  S.checking=true;S.loadFailed=false;render();
+  if(!backend)return;
+  S.checking=true;S.loadFailed=false;S.perm=false;render();
   try{
     let st=await withTimeout(backend.get("settings"),10000);
-    if(!st&&backend.kind==="db"){
+    if(!st&&!SA&&backend.kind==="db"){
       const loc=ls.get("settings");
       if(loc&&Array.isArray(loc.cats)){
         await withTimeout(backend.set("settings",loc),10000);
@@ -369,7 +514,7 @@ async function loadAll(){
       writeCache();
     }else if(!S.demo){S.settings=sampleSettings();S.months={[curKey]:sampleMonth()};S.demo=true;try{localStorage.removeItem("lotus:cache")}catch(e){}}
     lastSync=Date.now();
-  }catch(e){S.loadFailed=true}
+  }catch(e){S.loadFailed=true;S.perm=!!(e&&e.code==="permission-denied")}
   S.checking=false;render();
   if(S.mk!==curKey)ensureMonth(S.mk);
 }
@@ -378,8 +523,8 @@ async function ensureMonth(mk){
   if(S.demo||!backend){S.months[mk]={tx:[]};return true}
   S.loadingMonth=true;softRender();
   let ok=true;
-  try{S.months[mk]=normMonth(await withTimeout(backend.get("m-"+mk),10000))}
-  catch(e){ok=false}
+  try{S.months[mk]=normMonth(await withTimeout(backend.get("m-"+mk),10000));if(S.failedMonth===mk)S.failedMonth=""}
+  catch(e){ok=false;S.failedMonth=mk}
   S.loadingMonth=false;softRender();
   return ok;
 }
@@ -433,9 +578,11 @@ function lotus(ratio){
 }
 function notes(){
   let h="";
-  if(S.demo)h+='<div class="note"><p><strong>אלה נתוני דוגמה.</strong> שום דבר לא נשמר עד שמתחילים עם הנתונים שלך.</p>'+(S.checking?'<span>בודק אם יש נתונים שמורים…</span>':S.loadFailed?"":'<button class="btn small" data-act="start">להתחיל עם הנתונים שלי</button>')+'</div>';
-  if(S.loadFailed)h+='<div class="note quiet"><p>לא הצלחנו להגיע לנתונים השמורים, ולכן אי אפשר לערוך כרגע. '+(S.demo?"":"מה שמוצג הוא העותק האחרון שנשמר במכשיר הזה.")+'</p><button class="btn ghost small" data-act="retry">לנסות שוב</button></div>';
+  if(S.demo)h+='<div class="note"><p><strong>אלה נתוני דוגמה.</strong> שום דבר לא נשמר עד שמתחילים עם הנתונים שלך.</p>'+(S.checking?'<span>בודק אם יש נתונים שמורים…</span>':S.loadFailed?"":'<button class="btn small" data-act="start">להתחיל עם הנתונים שלי</button>'+(SA&&USER&&localHasData()?'<button class="btn ghost small" data-act="migrate">להעביר לחשבון את מה ששמור במכשיר הזה</button>':""))+'</div>';
+  if(S.loadFailed&&S.perm)h+='<div class="note quiet"><p>אין הרשאת גישה לנתונים בענן. אם האפליקציה הוקמה זה עתה, ייתכן שכללי הגישה של Firestore עוד לא הוגדרו.</p><button class="btn ghost small" data-act="retry">לנסות שוב</button></div>';
+  else if(S.loadFailed)h+='<div class="note quiet"><p>לא הצלחנו להגיע לנתונים השמורים, ולכן אי אפשר לערוך כרגע. '+(S.demo?"":"מה שמוצג הוא העותק האחרון שנשמר במכשיר הזה.")+'</p><button class="btn ghost small" data-act="retry">לנסות שוב</button></div>';
   if(S.saveFailed)h+='<div class="note quiet"><p>השינוי האחרון לא נשמר. ייתכן שאין חיבור, או שאין לך הרשאת כתיבה בדף הזה.</p><button class="btn ghost small" data-act="resave">לנסות לשמור שוב</button></div>';
+  if(S.failedMonth===S.mk&&!S.loadingMonth&&!S.loadFailed)h+='<div class="note quiet"><p>לא הצלחנו לטעון את '+esc(monthLabel(S.mk))+'. מה שמוצג כאן ריק עד שהטעינה תצליח.</p><button class="btn ghost small" data-act="retry-month">לנסות שוב</button></div>';
   if(!SA&&!S.demo&&backend&&backend.kind==="local"&&!S.checking)h+='<div class="note quiet"><p>הנתונים נשמרים רק בדפדפן הזה, ולא יופיעו במכשירים אחרים.</p></div>';
   return h;
 }
@@ -514,9 +661,16 @@ function viewFixed(){
   '<section><div class="sec-h"><h2>הכנסות קבועות</h2><button class="link" data-act="add-income">הוספה</button></div><div class="panel">'+rows(st.incomes,"incomes",1)+"</div></section>"+
   '<section><div class="sec-h"><h2>הוצאות קבועות</h2><button class="link" data-act="add-fixed">הוספה</button></div><div class="panel">'+rows(st.fixed,"fixed",3)+"</div></section>"+
   '<section><div class="sec-h"><h2>חיסכון חודשי</h2><button class="link" data-act="edit-saving">עריכה</button></div><div class="panel"><ul class="ledger plain"><li><span class="k">יורד מהתקציב לפני ההוצאות המשתנות</span>'+money(+st.saving||0)+"</li></ul></div></section>"+
-  (SA?'<section><div class="sec-h"><h2>גיבוי</h2></div><div class="panel" style="padding-block:14px"><p class="t2" style="margin:0 0 12px">הנתונים נשמרים רק על המכשיר הזה. מחיקת האפליקציה או ניקוי נתוני הדפדפן מוחקים אותם, ולכן כדאי להוריד גיבוי מדי פעם. '+(ls.get("lastBackup")?"הגיבוי האחרון: "+shortDate(String(ls.get("lastBackup")))+".":"עוד לא נוצר גיבוי.")+'</p><div class="acts" style="margin:0">'+(S.demo?"":'<button class="btn small" data-act="backup">הורדת גיבוי</button>')+'<button class="btn ghost small" data-act="restore">שחזור מגיבוי</button></div></div></section>':"");
+  (SA?accountHtml():"");
+}
+function accountHtml(){
+  const last=ls.get("lastBackup"), bk=(S.demo||S.checking||S.loadFailed?"":'<button class="btn ghost small" data-act="backup">הורדת גיבוי</button>')+(S.checking||S.loadFailed?"":'<button class="btn ghost small" data-act="restore">שחזור מגיבוי</button>');
+  if(USER)return'<section><div class="sec-h"><h2>חשבון</h2></div><div class="panel acct"><p class="t2">מחובר כ-<span class="num">'+esc(USER.email||"חשבון Google")+'</span>. הנתונים נשמרים בענן ומסתנכרנים בין המכשירים שלך.</p><div class="acts"><button class="btn ghost small" data-act="signout">יציאה</button>'+bk+'</div><button class="link danger" data-act="del-account">מחיקת החשבון והנתונים</button></div></section>';
+  return'<section><div class="sec-h"><h2>שמירה וגיבוי</h2></div><div class="panel acct"><p class="t2">הנתונים נשמרים רק על המכשיר הזה. מחיקת האפליקציה או ניקוי נתוני הדפדפן מוחקים אותם, ולכן כדאי להוריד גיבוי מדי פעם. '+(last?"הגיבוי האחרון: "+shortDate(String(last))+".":"עוד לא נוצר גיבוי.")+'</p><div class="acts">'+(AUTH?'<button class="btn small" data-act="signin">כניסה עם Google לשמירה בענן</button>':"")+bk+'</div></div></section>';
 }
 function render(){
+  document.body.classList.toggle("gated",!!S.gate);
+  if(S.gate){$("#app").innerHTML=gateHtml();return}
   $("#monthName").textContent=monthLabel(S.mk);
   document.querySelectorAll("#tabs button").forEach(b=>b.dataset.view===S.view?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
   const v={home:viewHome,tx:viewTx,cats:viewCats,fixed:viewFixed}[S.view]();
@@ -737,14 +891,16 @@ async function exportCsv(){
 /* ---------- backup (standalone app) ---------- */
 function lotusKeys(){let k=[];try{k=Object.keys(localStorage).filter(x=>x==="lotus:settings"||/^lotus:m-\d{4}-\d{2}$/.test(x))}catch(e){}return k}
 async function backupNow(){
-  const data={};lotusKeys().forEach(k=>data[k.slice(6)]=ls.get(k.slice(6)));
+  if(!backend||!backend.all)return;
+  let data;
+  try{data=await backend.all()}catch(e){return toast("לא הצלחנו לקרוא את כל הנתונים. צריך חיבור לאינטרנט.")}
   try{await S.dl.save({filename:"lotus-backup-"+todayStr+".json",data:JSON.stringify({app:"lotus",v:1,saved:todayStr,data})});ls.set("lastBackup",todayStr);render();toast("הגיבוי ירד למכשיר")}
   catch(e){toast("לא הצלחנו ליצור קובץ גיבוי")}
 }
 let RESTORE=null;
 function sheetRestore(){
   RESTORE=null;
-  openSheet('<form data-form="restore" novalidate><h3>שחזור מגיבוי</h3><p class="hint">בוחרים קובץ גיבוי של Lotus. השחזור מחליף את כל הנתונים שנמצאים עכשיו במכשיר הזה.</p><label class="f">קובץ גיבוי<input class="field" id="restore-file" type="file" accept=".json,application/json"></label><p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit" id="restore-go" disabled>להחליף את הנתונים ולשחזר</button><button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
+  openSheet('<form data-form="restore" novalidate><h3>שחזור מגיבוי</h3><p class="hint">בוחרים קובץ גיבוי של Lotus. השחזור מחליף את כל הנתונים הקיימים '+(USER?"בחשבון שלך":"במכשיר הזה")+'.</p><label class="f">קובץ גיבוי<input class="field" id="restore-file" type="file" accept=".json,application/json"></label><p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit" id="restore-go" disabled>להחליף את הנתונים ולשחזר</button><button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
 }
 async function readRestore(file){
   RESTORE=null;$("#restore-go").disabled=true;
@@ -757,14 +913,14 @@ async function readRestore(file){
     $("#restore-go").disabled=false;
   }catch(e){formErr("זה לא קובץ גיבוי תקין של Lotus.")}
 }
-function doRestore(){
-  if(!RESTORE)return;
-  try{
-    lotusKeys().forEach(k=>localStorage.removeItem(k));localStorage.removeItem("lotus:cache");
-    localStorage.setItem("lotus:settings",JSON.stringify(RESTORE.settings));
-    RESTORE.months.forEach(m=>localStorage.setItem("lotus:"+m[0],JSON.stringify(m[1])));
-  }catch(e){return formErr("השחזור נכשל: אין מספיק מקום פנוי באחסון של הדפדפן.")}
-  RESTORE=null;sheet.close();S.mk=curKey;S.view="home";S.demo=true;loadAll().then(()=>toast("הנתונים שוחזרו"));
+async function doRestore(){
+  if(!RESTORE||!backend||!backend.replaceAll)return;
+  const go=$("#restore-go");go.disabled=true;
+  const data={settings:RESTORE.settings};RESTORE.months.forEach(m=>{data[m[0]]=m[1]});
+  try{await backend.replaceAll(data)}
+  catch(e){go.disabled=false;return formErr(backend.kind==="db"?"השחזור נכשל. צריך חיבור לאינטרנט.":"השחזור נכשל: אין מספיק מקום פנוי באחסון של הדפדפן.")}
+  ls.del("cache");RESTORE=null;sheet.close();S.mk=curKey;S.view="home";S.demo=true;
+  await loadAll();toast("הנתונים שוחזרו");
 }
 
 sheet.addEventListener("change",e=>{
@@ -786,6 +942,7 @@ sheet.addEventListener("submit",e=>{
   if(kind==="import-pick")return;
   if(kind==="import")return commitImport();
   if(kind==="restore")return doRestore();
+  if(kind==="del-account")return doDeleteAccount(f.querySelector("[type=submit]"));
   if(kind==="tx"){
     const amount=parseAmt(fd.get("amount")), date=String(fd.get("date")||"");
     if(!amount)return formErr("צריך להזין סכום גדול מאפס.");
@@ -858,6 +1015,12 @@ document.addEventListener("click",e=>{
   else if(a==="fcat"){S.fcat=id||"";render()}
   else if(a==="import"){if(S.demo)return toast("כדי לייבא, קודם לוחצים על ״להתחיל עם הנתונים שלי״");sheetImport()}
   else if(a==="export")exportCsv();
+  else if(a==="signin")signIn();
+  else if(a==="local-mode"){ls.set("mode","local");enter(null)}
+  else if(a==="signout"){if(AUTH)AUTH.signOut().catch(()=>toast("היציאה נכשלה. נסו שוב."))}
+  else if(a==="migrate")migrateLocal();
+  else if(a==="del-account")sheetDelAccount();
+  else if(a==="retry-month")ensureMonth(S.mk);
   else if(a==="backup")backupNow();
   else if(a==="restore"){if(S.checking)return;sheetRestore()}
   else if(a==="imp-all"||a==="imp-none"){if(!IMP)return;const on=a==="imp-all";IMP.forEach(r=>r.on=on);sheet.querySelectorAll(".imp-row").forEach(row=>{row.classList.toggle("off",!on);row.querySelector("input[type=checkbox]").checked=on});syncImpCount()}
