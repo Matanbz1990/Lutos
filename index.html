@@ -76,13 +76,14 @@ button{cursor:pointer}
 .icon-btn{width:36px;height:36px;border-radius:50%;border:0;background:transparent;display:grid;place-items:center}
 .icon-btn:hover{background:var(--sunken)}
 .icon-btn svg{width:18px;height:18px}
+.cat-li .icon-btn svg{fill:none}
 .add-top{display:none}
 .tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{border:0;background:transparent;padding:8px 12px 10px;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
 .tabs button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
 
-main{display:flex;flex-direction:column;gap:20px;padding-block:20px 112px}
+main{display:flex;flex-direction:column;gap:20px;padding-block:20px 108px}
 .note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;background:var(--accent-soft);border-radius:var(--r);padding:12px 16px;font-size:.92rem}
 .note p{margin:0;flex:1 1 220px;min-width:0}
 .note.quiet{background:var(--sunken);color:var(--muted)}
@@ -161,7 +162,7 @@ section>h2,.sec-h h2{font-family:var(--display);font-weight:700;font-size:1.25re
 .empty{padding:28px 8px;text-align:center;color:var(--muted)}
 
 .fab{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:6;box-shadow:0 6px 20px color-mix(in srgb,var(--ink) 25%,transparent);padding:14px 22px;font-size:1rem}
-.toast{position:fixed;inset-inline:0;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:7;display:flex;justify-content:center;pointer-events:none;padding-inline:16px}
+.toast{position:fixed;inset-inline:0;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:7;display:flex;justify-content:center;pointer-events:none;padding-inline:16px}
 .toast div{pointer-events:auto;background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 16px;display:flex;gap:16px;align-items:center;font-size:.92rem}
 .toast button{border:0;background:none;color:inherit;font-weight:700;text-decoration:underline}
 
@@ -220,7 +221,59 @@ dialog .acts .btn:first-child{flex:1}
 .split i{display:block;height:100%}
 .split .a{background:var(--on-pond-muted)} .split .b{background:var(--petal)}
 .fineprint{font-size:.85rem;color:var(--muted);max-width:62ch;margin:0}
-.gated .top,.gated .fab{display:none}
+.bnav{position:fixed;inset:auto 0 0;z-index:6;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.bnav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;color:var(--muted);font-size:.72rem;font-weight:500;border-radius:12px;min-width:0}
+.bnav svg{width:22px;height:22px}
+.bnav button[aria-current="page"]{color:var(--accent)}
+.bnav .bnav-add{justify-self:center;justify-content:center;width:54px;height:54px;border-radius:50%;background:var(--accent);color:var(--on-accent);box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);margin-top:-24px}
+.bnav .bnav-add svg{width:26px;height:26px;stroke-width:2.4}
+.nomonth .month{visibility:hidden}
+.greet h1{font-family:var(--display);font-size:1.6rem;margin:0;line-height:1.2}
+.greet span{color:var(--muted);font-size:.9rem}
+.hero .today{display:inline-flex;margin-top:10px;background:var(--pond-line);color:var(--on-pond);border-radius:99px;padding:4px 12px;font-size:.9rem;font-weight:500}
+.inslist{margin:0;padding:0;list-style:none}
+.ins{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.ins:last-child{border-bottom:0}
+.ins .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--cc) 16%,var(--surface));color:var(--cc)}
+.ins .ic svg{width:18px;height:18px}
+.ins p{margin:0;font-size:.95rem}
+.ins-acts{grid-column:2;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.setup{background:var(--surface);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.steps li{display:flex;align-items:center;gap:10px;color:var(--muted);min-height:34px}
+.steps li.next{color:var(--ink);font-weight:500}
+.steps .ck{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
+.steps li.next .ck{border-color:var(--accent)}
+.steps li.done .ck{background:var(--good);border-color:var(--good);color:var(--surface)}
+.steps .ck svg{width:14px;height:14px;stroke-width:3}
+.steps .btn{margin-inline-start:auto}
+.setup>.link{align-self:flex-start;font-size:.85rem;color:var(--muted)}
+.goal{background:var(--surface);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.goal-top{display:flex;align-items:center;gap:14px;border:0;background:none;padding:0;text-align:start;width:100%}
+.ring{flex:none;width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--cc) calc(var(--p)*1%),var(--sunken) 0);display:grid;place-items:center}
+.ring b{width:44px;height:44px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:.8rem;font-variant-numeric:tabular-nums}
+.goal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.goal-foot .t2{min-width:0}
+.goal-foot .btn{flex:none}
+.empty-card{background:var(--pond);color:var(--on-pond);border-radius:24px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.empty-card h3{font-family:var(--display);font-size:1.4rem;margin:0}
+.empty-card p{margin:0;color:var(--on-pond-muted);max-width:36ch}
+.empty-card .flower{width:130px;height:auto}
+.empty-card .btn{background:var(--on-pond);color:var(--pond);margin-top:6px}
+.more-list{display:flex;flex-direction:column}
+.more-item{display:flex;align-items:center;gap:12px;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:none;text-align:start;width:100%}
+.more-item:last-child{border-bottom:0}
+.more-item .ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--sunken);color:var(--ink)}
+.more-item .ic svg{width:20px;height:20px}
+.quick{margin-top:-6px}
+.quick button{background:var(--bg)}
+.cat-li{display:flex;align-items:center;gap:4px;border-bottom:1px solid var(--line)}
+.cat-li:last-child{border-bottom:0}
+.cat-li .cat{border-bottom:0;flex:1;min-width:0}
+.cat-li .icon-btn{flex:none;color:var(--muted)}
+.empty-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.sk{background:var(--sunken);border-radius:var(--r)}
+.gated .top,.gated .bnav{display:none}
 .gate{background:var(--pond);color:var(--on-pond);border-radius:24px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;margin-top:6vh}
 .gate h1{font-family:var(--display);font-size:2.4rem;line-height:1;margin:0;direction:ltr}
 .gate p{margin:0;max-width:34ch;text-wrap:balance}
@@ -235,9 +288,11 @@ dialog .acts .btn:first-child{flex:1}
 .acct .acts{margin:0}
 .acct .acts .btn{flex:none}
 .acct .link.danger{color:var(--bad);margin-top:14px;font-size:.9rem}
+@media (max-width:699px){.tabs{display:none}.bar{padding-block:12px}
+  dialog form::before{content:"";align-self:center;flex:none;width:40px;height:4px;border-radius:9px;background:var(--line);margin-top:-8px}}
 @media (min-width:700px){
   .add-top{display:inline-block}
-  .fab{display:none}
+  .bnav{display:none}
   main{padding-bottom:48px}
   .toast{bottom:24px}
   dialog{margin:auto;border-radius:24px}
@@ -245,6 +300,36 @@ dialog .acts .btn:first-child{flex:1}
 }
 @media (prefers-reduced-motion:no-preference){
   .meter i,.wk-bar,.track i{transition:width .4s ease,height .4s ease}
+  .enter>*{animation:rise .42s cubic-bezier(.2,.7,.2,1) both}
+  .enter>*:nth-child(2){animation-delay:.05s}
+  .enter>*:nth-child(3){animation-delay:.1s}
+  .enter>*:nth-child(4){animation-delay:.15s}
+  .enter>*:nth-child(5){animation-delay:.2s}
+  .enter>*:nth-child(n+6){animation-delay:.25s}
+  .enter .guide>*{animation:rise .42s cubic-bezier(.2,.7,.2,1) both}
+  .enter .guide>*:nth-child(3){animation-delay:.06s}
+  .enter .guide>*:nth-child(4){animation-delay:.12s}
+  .enter .guide>*:nth-child(n+5){animation-delay:.18s}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}}
+  .enter .flower .p{animation:bloom .7s cubic-bezier(.2,.8,.3,1.15) both;transform-box:fill-box;transform-origin:50% 100%}
+  @keyframes bloom{from{transform:scale(.15);opacity:0}}
+  .enter .meter i,.enter .track i,.enter .split i{animation:growx .8s cubic-bezier(.2,.7,.2,1) .15s both;transform-origin:right center}
+  @keyframes growx{from{transform:scaleX(0)}}
+  .enter .wk-bar{animation:growy .7s cubic-bezier(.2,.7,.2,1) .2s both;transform-origin:center bottom}
+  @keyframes growy{from{transform:scaleY(0)}}
+  dialog[open]{animation:sheetup .28s cubic-bezier(.2,.8,.2,1)}
+  dialog[open]::backdrop{animation:fade .25s ease}
+  @keyframes sheetup{from{transform:translateY(40px);opacity:0}}
+  @keyframes fade{from{opacity:0}}
+  .toast div{animation:rise .25s ease both}
+  .flash{animation:flash 1.6s ease}
+  @keyframes flash{from{background:var(--accent-soft)}}
+  .sk{background:linear-gradient(100deg,var(--sunken) 40%,var(--surface) 50%,var(--sunken) 60%);background-size:220% 100%;animation:shimmer 1.3s linear infinite}
+  @keyframes shimmer{from{background-position:120% 0}to{background-position:-100% 0}}
+  .btn,.bnav button,.chips button{transition:transform .12s ease}
+  .btn:active,.bnav button:active,.chips button:active{transform:scale(.95)}
+  .bnav button[aria-current="page"] svg{animation:pop .3s ease}
+  @keyframes pop{50%{transform:scale(1.22)}}
 }
 </style>
 </head>
@@ -277,6 +362,7 @@ window.LOTUS_FIREBASE={apiKey:"AIzaSyDJ1RLZHVlQMR-ybiFFnY9R1Q3-p5xluus",authDoma
       <button data-view="home">תזרים</button>
       <button data-view="tx">תנועות</button>
       <button data-view="cats">קטגוריות</button>
+      <button data-view="goals">יעדים</button>
       <button data-view="fixed">הכנסות והוצאות קבועות</button>
       <button data-view="tips">טיפים</button>
       <button data-view="invest">השקעות</button>
@@ -285,7 +371,7 @@ window.LOTUS_FIREBASE={apiKey:"AIzaSyDJ1RLZHVlQMR-ybiFFnY9R1Q3-p5xluus",authDoma
 </header>
 
 <main class="wrap" id="app"></main>
-<button class="btn fab" data-act="add">+ תנועה</button>
+<nav class="bnav" id="bnav" aria-label="ניווט ראשי"></nav>
 <div class="toast" id="toast" hidden></div>
 <dialog id="sheet"></dialog>
 
@@ -333,8 +419,9 @@ const DEFAULT_CATS=[
   {id:"trans",name:"תחבורה ודלק",budget:700,c:3},{id:"shop",name:"קניות",budget:600,c:4},
   {id:"fun",name:"פנאי ובילויים",budget:500,c:5},{id:"health",name:"בריאות ופארם",budget:300,c:6},
   {id:"home",name:"בית",budget:400,c:7},{id:"other",name:"אחר",budget:300,c:8}];
-const emptySettings=()=>({v:1,incomes:[],fixed:[],saving:0,cats:clone(DEFAULT_CATS)});
+const emptySettings=()=>({v:1,incomes:[],fixed:[],saving:0,goals:[],cats:clone(DEFAULT_CATS)});
 function sampleSettings(){return{v:1,saving:1500,cats:clone(DEFAULT_CATS),
+  goals:[{id:"g1",name:"חופשה ביוון",target:8000,saved:3200,c:3},{id:"g2",name:"כרית ביטחון",target:30000,saved:12500,c:1}],
   incomes:[{id:"i1",name:"משכורת",amount:14500,day:10}],
   fixed:[{id:"f1",name:"שכר דירה",amount:5200,day:1},{id:"f2",name:"חדר כושר",amount:220,day:3},{id:"f3",name:"ביטוחים",amount:340,day:5},{id:"f4",name:"נטפליקס וספוטיפיי",amount:75,day:8},{id:"f5",name:"סלולר ואינטרנט",amount:190,day:12},{id:"f6",name:"ארנונה",amount:420,day:15},{id:"f7",name:"חשמל ומים",amount:380,day:20}]}}
 function sampleMonth(){
@@ -350,8 +437,10 @@ const KEYWORDS=[
   [/פארם|pharm|מרקחת|מכבי|כללית|מאוחדת|לאומית|רופא|מרפא|אופטיק|שיניים|דנטל|קופת חולים/i,"health"],
   [/איקאה|ikea|הום סנטר|אייס|ace |טמבור|רהיט|חברת החשמל|מי אביבים|ארנונה|גז |ועד בית|עיריי?ת|שטיח|כלי בית/i,"home"]];
 
-const S={settings:sampleSettings(),months:{[curKey]:sampleMonth()},view:"home",mk:curKey,demo:true,checking:true,loadFailed:false,saveFailed:false,q:"",fcat:"",loadingMonth:false,dl:null,gate:null,gateErr:"",gateBusy:false,perm:false,failedMonth:"",offerMigrate:false};
-let backend=null, IMP=null, lastSync=0;
+const S={settings:sampleSettings(),months:{[curKey]:sampleMonth()},view:"home",mk:curKey,demo:true,checking:true,loadFailed:false,saveFailed:false,q:"",fcat:"",loadingMonth:false,dl:null,gate:null,gateErr:"",gateBusy:false,perm:false,failedMonth:"",offerMigrate:false,painted:false,flashId:null};
+let backend=null, IMP=null, lastSync=0, lastKey="", lastHero=null;
+const prevKey=shiftMonth(curKey,-1);
+const motionOK=!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
 /* ---------- storage ---------- */
 const ls={get(k){try{return JSON.parse(localStorage.getItem("lotus:"+k))}catch(e){return null}},set(k,d){try{localStorage.setItem("lotus:"+k,JSON.stringify(d))}catch(e){}},del(k){try{localStorage.removeItem("lotus:"+k)}catch(e){}}};
@@ -430,12 +519,12 @@ function stampRec(){
 }
 function paintCache(){
   const cache=ls.get("cache");
-  if(cache&&cache.settings&&Array.isArray(cache.settings.cats)&&cache.mk===curKey&&(!SA||cache.owner===owner())){S.settings=Object.assign(emptySettings(),cache.settings);S.months={[curKey]:normMonth(cache.month)};S.demo=false}
+  if(cache&&cache.settings&&Array.isArray(cache.settings.cats)&&cache.mk===curKey&&(!SA||cache.owner===owner())){S.settings=Object.assign(emptySettings(),cache.settings);S.months={[curKey]:normMonth(cache.month)};S.demo=false;S.painted=true}
 }
 function resetState(){
   if(SA){S.settings=emptySettings();S.months={[curKey]:{tx:[]}};S.demo=false}
   else{S.settings=sampleSettings();S.months={[curKey]:sampleMonth()};S.demo=true}
-  S.offerMigrate=false;S.checking=true;S.loadFailed=false;S.saveFailed=false;S.perm=false;S.failedMonth="";
+  S.offerMigrate=false;S.painted=false;S.checking=true;S.loadFailed=false;S.saveFailed=false;S.perm=false;S.failedMonth="";
   S.mk=curKey;S.view="home";S.q="";S.fcat="";
   Object.keys(pending).forEach(k=>delete pending[k]);Object.keys(writing).forEach(k=>delete writing[k]);
 }
@@ -562,6 +651,12 @@ async function loadAll(){
   }catch(e){S.loadFailed=true;S.perm=!!(e&&e.code==="permission-denied")}
   S.checking=false;render();
   if(S.mk!==curKey)ensureMonth(S.mk);
+  if(!S.loadFailed)peekMonth(prevKey);
+}
+/* Quietly load a month that insights compare against; failure just means fewer insights. */
+async function peekMonth(mk){
+  if(S.months[mk]||S.demo||!backend)return;
+  try{const m=normMonth(await withTimeout(backend.get("m-"+mk),10000));if(!S.months[mk]&&!S.demo){S.months[mk]=m;if(!sheet.open)softRender()}}catch(e){}
 }
 async function ensureMonth(mk){
   if(S.months[mk])return true;
@@ -586,6 +681,7 @@ async function resync(){
     S.settings=Object.assign(emptySettings(),st);
     const kept={};keys.forEach((k,i)=>kept[k]=normMonth(ms[i]));S.months=kept;
     if(JSON.stringify([S.settings,keys.map(k=>S.months[k])])!==before){writeCache();softRender()}
+    peekMonth(prevKey);
   }catch(e){}
 }
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")resync()});
@@ -618,13 +714,13 @@ function lotus(ratio){
   const k=Math.max(0,Math.min(7,Math.ceil(ratio*7-1e-9)));
   const petals=[[-72,6],[72,7],[-48,4],[48,5],[-24,2],[24,3],[0,1]];
   return'<svg class="flower" viewBox="22 14 156 104" role="img" aria-label="פרח לוטוס: '+k+' מתוך 7 עלי כותרת מלאים">'+
-    petals.map(p=>'<path transform="translate(100 96) rotate('+p[0]+')" d="M0 0C-17-24-12-58 0-74 12-58 17-24 0 0Z" fill="'+(p[1]<=k?"var(--petal)":"var(--pond)")+'" stroke="'+(p[1]<=k?"var(--pond)":"var(--petal-off)")+'" stroke-width="1.5"/>').join("")+
+    petals.map(p=>'<g transform="translate(100 96) rotate('+p[0]+')"><path class="p" style="animation-delay:'+(0.08*(7-p[1]))+'s" d="M0 0C-17-24-12-58 0-74 12-58 17-24 0 0Z" fill="'+(p[1]<=k?"var(--petal)":"var(--pond)")+'" stroke="'+(p[1]<=k?"var(--pond)":"var(--petal-off)")+'" stroke-width="1.5"/></g>').join("")+
     '<path d="M30 104h140M56 112h88" fill="none" stroke="var(--petal-off)" stroke-width="2" stroke-linecap="round"/></svg>';
 }
 function notes(){
   let h="";
   if(S.demo)h+='<div class="note"><p><strong>אלה נתוני דוגמה.</strong> שום דבר לא נשמר עד שמתחילים עם הנתונים שלך.</p>'+(S.checking?'<span>בודק אם יש נתונים שמורים…</span>':S.loadFailed?"":'<button class="btn small" data-act="start">להתחיל עם הנתונים שלי</button>')+'</div>';
-  if(SA&&S.checking&&!S.loadFailed)h+='<div class="note quiet"><p>טוען את הנתונים שלך…</p></div>';
+  if(SA&&S.checking&&!S.loadFailed)h+='<div class="note quiet"><p>מסנכרן את הנתונים שלך…</p></div>';
   if(S.offerMigrate&&!S.checking&&!S.loadFailed)h+='<div class="note"><p><strong>נמצאו נתונים שנשמרו במכשיר הזה בלי חשבון.</strong> אפשר להעביר אותם לחשבון שלך.</p><button class="btn small" data-act="migrate">להעביר לחשבון</button><button class="btn ghost small" data-act="no-migrate">לא, להתחיל מחדש</button></div>';
   if(S.loadFailed&&S.perm)h+='<div class="note quiet"><p>אין הרשאת גישה לנתונים בענן. אם האפליקציה הוקמה זה עתה, ייתכן שכללי הגישה של Firestore עוד לא הוגדרו.</p><button class="btn ghost small" data-act="retry">לנסות שוב</button></div>';
   else if(S.loadFailed)h+='<div class="note quiet"><p>לא הצלחנו להגיע לנתונים השמורים, ולכן אי אפשר לערוך כרגע. '+(S.demo?"":"מה שמוצג הוא העותק האחרון שנשמר במכשיר הזה.")+'</p><button class="btn ghost small" data-act="retry">לנסות שוב</button></div>';
@@ -633,17 +729,137 @@ function notes(){
   if(!SA&&!S.demo&&backend&&backend.kind==="local"&&!S.checking)h+='<div class="note quiet"><p>הנתונים נשמרים רק בדפדפן הזה, ולא יופיעו במכשירים אחרים.</p></div>';
   return h;
 }
+function todayLeft(c){
+  const st=sum(txOf(curKey).filter(t=>t.type!=="inc"&&t.date===todayStr),t=>t.amount), per=Math.floor((c.left+st)/c.daysLeft);
+  return{per,left:per-st,spent:st};
+}
 function hero(c){
   if(!S.demo&&c.baseInc===0&&c.extraInc===0)return'<section class="hero"><div class="hero-empty"><h2>כמה נשאר לך להוציא החודש?</h2><p class="sub" style="margin:0">מוסיפים הכנסה חודשית והוצאות קבועות, ו-Lotus מחשב את מה שנשאר להוצאות היומיום.</p><button class="btn" data-act="add-income">הוספת הכנסה חודשית</button></div></section>';
   const over=c.left<0, ratio=c.budget>0?Math.max(0,c.left)/c.budget:0, used=c.budget>0?Math.min(100,c.spent/c.budget*100):100;
-  let sub, chip="";
+  let sub, chip="", today="";
   if(c.budget<0)sub="ההוצאות הקבועות והחיסכון גבוהים מההכנסות החודש.";
-  else if(over)sub="ההוצאות המשתנות עברו את התקציב שנשאר אחרי קבועות וחיסכון.";
+  else if(over)sub=c.saving>0?"התקציב להוצאות משתנות נוצל. מה שיוצא מעכשיו בא על חשבון החיסכון החודשי ("+money(c.saving)+").":"התקציב להוצאות משתנות נוצל עד סוף החודש.";
   else if(c.rel<0)sub="החודש נסגר עם יתרה.";
-  else sub="בערך "+money(Math.floor(c.left/c.daysLeft))+" ליום ב-"+c.daysLeft+" הימים שנשארו";
+  else if(c.rel>0)sub="בערך "+money(Math.floor(c.left/c.daysLeft))+" ליום לאורך החודש";
+  else{
+    const t=todayLeft(c);
+    sub=money(t.per)+" ליום ב-"+(c.daysLeft===1?"יום האחרון של החודש":c.daysLeft+" הימים שנשארו");
+    if(t.spent>0)today='<div class="today">'+(t.left>=0?"נשאר להיום "+money(Math.floor(t.left)):"היום עברת את הקצב היומי ב-"+money(Math.ceil(-t.left)))+"</div>";
+  }
   if(c.rel===0&&c.budget>0&&!over){const exp=c.budget*c.day/c.days;chip=c.spent>exp*1.05?'<span class="chip">מעל הקצב החודשי</span>':'<span class="chip">בקצב טוב</span>'}
-  return'<section class="hero"><div><div class="lbl">'+(over?"חריגה מהתקציב החודשי":c.rel<0?"נשאר בסוף החודש":"נשאר להוציא עד סוף החודש")+'</div><div class="big">'+money(over?-c.left:c.left)+'</div><div class="sub">'+sub+'</div></div>'+lotus(ratio)+
+  const val=over?-c.left:c.left;
+  return'<section class="hero"><div><div class="lbl">'+(over?"חריגה מהתקציב החודשי":c.rel<0?"נשאר בסוף החודש":"נשאר להוציא עד סוף החודש")+'</div><div class="big" id="heroBig" data-val="'+r2(val)+'">'+money(val)+'</div><div class="sub">'+sub+'</div>'+today+'</div>'+lotus(ratio)+
     '<div class="foot"><div class="meter"><i style="width:'+used.toFixed(1)+'%"></i></div><div class="row"><span>הוצאת '+money(c.spent)+" מתוך "+money(Math.max(0,c.budget))+" למשתנות</span>"+chip+"</div></div></section>";
+}
+function animateHero(entering){
+  const el=$("#heroBig");if(!el){lastHero=null;return}
+  const to=+el.dataset.val, from=entering||lastHero==null?0:lastHero;lastHero=to;
+  if(!motionOK||from===to)return;
+  const t0=performance.now(), dur=entering?700:450;
+  const step=t=>{if(!el.isConnected)return;const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);el.innerHTML=money(p<1?Math.round(from+(to-from)*e):to);if(p<1)requestAnimationFrame(step)};
+  requestAnimationFrame(step);
+}
+/* A short fall of lotus petals for the moments worth marking. */
+function celebrate(){
+  if(!motionOK)return;
+  const cv=document.createElement("canvas"), dpr=Math.min(2,window.devicePixelRatio||1), W=window.innerWidth, H=window.innerHeight;
+  cv.width=W*dpr;cv.height=H*dpr;cv.setAttribute("aria-hidden","true");
+  cv.style.cssText="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50";
+  document.body.appendChild(cv);
+  const g=cv.getContext("2d");g.scale(dpr,dpr);
+  const cs=getComputedStyle(document.documentElement), cols=["--petal","--accent","--good"].map(v=>cs.getPropertyValue(v).trim()||"#F58DB4");
+  const P=Array.from({length:46},(_,i)=>({x:Math.random()*W,y:-20-Math.random()*H*.4,vx:(Math.random()-.5)*1.4,vy:2+Math.random()*3,r:Math.random()*6.28,vr:(Math.random()-.5)*.2,s:7+Math.random()*8,c:cols[i%3]}));
+  const t0=performance.now();
+  const frame=t=>{
+    const el=t-t0;g.clearRect(0,0,W,H);g.globalAlpha=Math.max(0,1-Math.max(0,el-1600)/700);
+    P.forEach(p=>{p.x+=p.vx+Math.sin(el/300+p.r)*.6;p.y+=p.vy;p.r+=p.vr;g.save();g.translate(p.x,p.y);g.rotate(p.r);g.fillStyle=p.c;g.beginPath();g.moveTo(0,-p.s);g.bezierCurveTo(p.s*.7,-p.s*.3,p.s*.5,p.s*.7,0,p.s);g.bezierCurveTo(-p.s*.5,p.s*.7,-p.s*.7,-p.s*.3,0,-p.s);g.fill();g.restore()});
+    if(el<2300)requestAnimationFrame(frame);else cv.remove();
+  };
+  requestAnimationFrame(frame);
+}
+function weekData(mk){
+  const c=calc(mk), tx=txOf(mk).filter(t=>t.type!=="inc");
+  return[[1,7],[8,14],[15,21],[22,28],[29,c.days]].filter(s=>s[0]<=c.days).map(s=>({s,sp:sum(tx.filter(t=>{const d=+t.date.slice(8);return d>=s[0]&&d<=s[1]}),t=>t.amount),b:Math.max(0,c.budget)*(s[1]-s[0]+1)/c.days,done:c.rel<0||(c.rel===0&&c.day>s[1])}));
+}
+/* Completed weeks in a row that stayed inside the weekly budget, counted back from this week. */
+function streak(){
+  if(!txOf(curKey).length)return 0;
+  let n=0;
+  for(const mk of [curKey,prevKey]){
+    if(!S.months[mk]||(mk===prevKey&&!txOf(mk).length))break;
+    let broke=false;
+    for(const x of weekData(mk).filter(w=>w.done).reverse()){if(x.b>0&&x.sp<=x.b)n++;else{broke=true;break}}
+    if(broke)break;
+  }
+  return n;
+}
+const lower=t=>(t||"").trim().toLowerCase();
+function recurringCandidate(){
+  const pm=S.months[prevKey];if(!pm||S.demo)return null;
+  const skip=ls.get("skipRec")||[], names=S.settings.fixed.map(f=>lower(f.name)), cur=txOf(curKey);
+  for(const t of cur){
+    const d=lower(t.desc);
+    if(t.type==="inc"||d.length<3||skip.includes(d))continue;
+    if(names.some(n=>n&&(n.includes(d)||d.includes(n))))continue;
+    if(cur.filter(x=>lower(x.desc)===d).length!==1)continue;
+    const m=pm.tx.filter(x=>x.type!=="inc"&&lower(x.desc)===d);
+    if(m.length===1&&Math.abs(m[0].amount-t.amount)<=Math.max(1,t.amount*0.03))return t;
+  }
+  return null;
+}
+function insights(c){
+  if(c.rel!==0||c.budget<=0||S.mk!==curKey)return"";
+  const out=[], tx=txOf(curKey).filter(t=>t.type!=="inc");
+  const row=(ic,cc,html,extra)=>'<li class="ins" style="--cc:var(--c'+cc+')"><span class="ic">'+icon(ic)+"</span><p>"+html+"</p>"+(extra||"")+"</li>";
+  if(c.day>=5&&c.spent>0&&c.left>=0){
+    const end=c.budget-c.spent/c.day*c.days;
+    out.push(end>=0?row("trend",1,"בקצב הנוכחי החודש יסתיים עם יתרה של "+money(Math.round(end))+"."):row("trend",7,"בקצב הנוכחי החודש יסתיים בחריגה של "+money(Math.round(-end))+". עמידה בקצב היומי שמופיע למעלה תסגור אותו באיזון."));
+  }
+  const rc=recurringCandidate();
+  if(rc)out.push(row("repeat",5,"<strong>"+esc(rc.desc)+"</strong> חויב גם בחודש שעבר באותו סכום ("+money(rc.amount)+"). אם זה מנוי, אפשר להפוך אותו להוצאה קבועה.",'<span class="ins-acts"><button class="btn ghost small" data-act="make-fixed" data-id="'+esc(rc.id)+'">להפוך לקבועה</button><button class="link" data-act="skip-rec" data-id="'+esc(rc.id)+'">לא עכשיו</button></span>'));
+  const pm=S.months[prevKey];
+  if(pm&&pm.tx.length){
+    let best=null;
+    S.settings.cats.forEach(k=>{
+      const a=sum(tx.filter(t=>t.cat===k.id),t=>t.amount), b=sum(pm.tx.filter(t=>t.type!=="inc"&&t.cat===k.id&&+t.date.slice(8)<=c.day),t=>t.amount);
+      if(b>=50&&Math.abs(a-b)>=50&&(!best||Math.abs(a-b)>Math.abs(best.a-best.b)))best={k,a,b};
+    });
+    if(best){const p=Math.round(Math.abs(best.a-best.b)/best.b*100);out.push(row("chart",best.a>best.b?4:1,"<strong>"+esc(best.k.name)+":</strong> "+money(Math.round(best.a))+" עד עכשיו, "+p+"% "+(best.a>best.b?"יותר":"פחות")+" מאותה נקודה בחודש שעבר."))}
+  }
+  const st=streak();
+  if(st>=2)out.push(row("flame",2,"<strong>"+st+" שבועות ברצף</strong> בתוך התקציב השבועי. כל הכבוד."));
+  const up=S.settings.fixed.filter(f=>{const d=Math.min(+f.day||1,c.days);return d>c.day&&d<=c.day+7}).sort((a,b)=>a.day-b.day);
+  if(up.length)out.push(row("cal",3,"בשבוע הקרוב "+(up.length===1?"יורדת הוצאה קבועה אחת":"יורדות "+up.length+" הוצאות קבועות")+": "+up.slice(0,3).map(f=>esc(f.name)+" ("+money(f.amount)+")").join(", ")+(up.length>3?" ועוד":"")+". הן כבר מחושבות בתקציב."));
+  if(c.day>=7&&tx.length>=3){const used=new Set(tx.map(t=>t.date)), free=Array.from({length:c.day-1},(_,i)=>curKey+"-"+pad(i+1)).filter(d=>!used.has(d)).length;if(free>=2)out.push(row("check",1,"<strong>"+free+" ימים בלי הוצאות</strong> החודש עד עכשיו."))}
+  if(!out.length)return"";
+  return'<section><div class="sec-h"><h2>תובנות</h2></div><div class="panel"><ul class="inslist">'+out.slice(0,5).join("")+"</ul></div></section>";
+}
+function recap(c){
+  if(c.rel>=0)return"";
+  const tx=txOf(S.mk).filter(t=>t.type!=="inc");if(!tx.length)return"";
+  const row=(ic,cc,html)=>'<li class="ins" style="--cc:var(--c'+cc+')"><span class="ic">'+icon(ic)+"</span><p>"+html+"</p></li>";
+  const by={};tx.forEach(t=>{by[t.cat]=(by[t.cat]||0)+t.amount});
+  const top=Object.keys(by).sort((a,b)=>by[b]-by[a])[0], big=tx.slice().sort((a,b)=>b.amount-a.amount)[0], days=new Set(tx.map(t=>t.date)).size;
+  return'<section><div class="sec-h"><h2>סיכום החודש</h2></div><div class="panel"><ul class="inslist">'+
+    row("trend",c.left>=0?1:7,c.left>=0?"החודש נסגר עם יתרה של <strong>"+money(Math.floor(c.left))+"</strong> מתוך תקציב של "+money(Math.max(0,c.budget))+".":"החודש נסגר בחריגה של <strong>"+money(Math.ceil(-c.left))+"</strong> מעבר לתקציב של "+money(Math.max(0,c.budget))+".")+
+    row("chart",4,"הקטגוריה הגדולה: <strong>"+esc(catOf(top).name)+"</strong>, "+money(Math.round(by[top]))+", שהם "+Math.round(by[top]/c.spent*100)+"% מההוצאות המשתנות.")+
+    row("card",3,"ההוצאה הגדולה ביותר: <strong>"+esc(big.desc||catOf(big.cat).name)+"</strong>, "+money(big.amount)+".")+
+    (days>=5&&c.days-days>0?row("check",1,(c.days-days)+" ימים בלי הוצאות מתוך "+c.days+"."):"")+
+    "</ul></div></section>";
+}
+function greeting(){
+  if(S.mk!==curKey)return"";
+  const h=new Date().getHours(), g=h>=5&&h<12?"בוקר טוב":h>=12&&h<17?"צהריים טובים":h>=17&&h<21?"ערב טוב":"לילה טוב";
+  const name=USER&&USER.displayName?String(USER.displayName).trim().split(/\s+/)[0]:"";
+  return'<div class="greet"><h1>'+g+(name?", "+esc(name):"")+"</h1><span>"+esc(new Intl.DateTimeFormat("he-IL",{weekday:"long",day:"numeric",month:"long"}).format(new Date()))+"</span></div>";
+}
+function setupCard(){
+  if(S.demo||S.mk!==curKey||!S.settings.incomes.length||ls.get("hideSetup"))return"";
+  const anyTx=Object.keys(S.months).some(k=>S.months[k].tx.length);
+  const steps=[["הכנסה חודשית",true,"",""],["הוצאות קבועות",S.settings.fixed.length>0,"add-fixed","הוספה"],["חיסכון חודשי",+S.settings.saving>0,"edit-saving","הגדרה"],["תנועה ראשונה",anyTx,"add","הוספה"],["יעד חיסכון",(S.settings.goals||[]).length>0,"add-goal","יצירה"]];
+  const done=steps.filter(x=>x[1]).length;if(done===steps.length)return"";
+  const next=steps.find(x=>!x[1]);
+  return'<section class="setup"><div class="sec-h" style="margin:0"><h2>מתחילים</h2><span class="t2">'+done+" מתוך "+steps.length+'</span></div><div class="track"><i style="width:'+(done/steps.length*100)+'%;background:var(--accent)"></i></div><ul class="steps">'+steps.map(x=>'<li class="'+(x[1]?"done":x===next?"next":"")+'"><span class="ck">'+(x[1]?icon("check"):"")+"</span><span>"+x[0]+"</span>"+(x===next?'<button class="btn small" data-act="'+x[2]+'">'+x[3]+"</button>":"")+"</li>").join("")+'</ul><button class="link" data-act="hide-setup">הסתרת הרשימה</button></section>';
 }
 function weeks(c,mk){
   if(c.budget<=0&&c.spent===0)return"";
@@ -656,32 +872,42 @@ function weeks(c,mk){
     return'<div class="wk'+(d.sp>d.b&&d.b>0?" over":"")+(nowWk?" now":"")+'"><span class="wk-v">'+(future&&!d.sp?"–":money(Math.round(d.sp)))+'</span><div class="wk-track"><div class="wk-bar" style="height:'+Math.max(0,d.sp/max*100).toFixed(1)+'%"></div><i class="wk-mark" style="bottom:'+(d.b/max*100).toFixed(1)+'%"></i></div><span class="wk-l"><span class="num">'+d.s[0]+(d.s[0]!==d.s[1]?"–"+d.s[1]:"")+"</span>"+(nowWk?"<br>השבוע":"")+"</span></div>"}).join("")+
     '</div><div class="legend"><span><i></i>התקציב השבועי, '+money(Math.round(Math.max(0,c.budget)*7/c.days))+" לשבוע מלא</span></div></section>";
 }
-function txRow(t){
+function txRow(t,withDate){
   const inc=t.type==="inc", c=inc?{name:"הכנסה נוספת",c:1}:catOf(t.cat);
-  return'<li><button class="item" data-act="edit-tx" data-id="'+esc(t.id)+'"><span class="dot" style="--cc:var(--c'+c.c+')">'+esc((c.name||"?").trim().charAt(0))+'</span><span class="txt"><span class="t1">'+esc(t.desc||c.name)+'</span><span class="t2">'+esc(c.name)+'</span></span><span class="amt'+(inc?" in":"")+'">'+money(t.amount,inc)+"</span></button></li>";
+  const when=withDate===true?' · <span class="num">'+(+t.date.slice(8))+"."+(+t.date.slice(5,7))+"</span>":"";
+  return'<li><button class="item'+(t.id===S.flashId?" flash":"")+'" data-act="edit-tx" data-id="'+esc(t.id)+'"><span class="dot" style="--cc:var(--c'+c.c+')">'+esc((c.name||"?").trim().charAt(0))+'</span><span class="txt"><span class="t1">'+esc(t.desc||c.name)+'</span><span class="t2">'+esc(c.name)+when+'</span></span><span class="amt'+(inc?" in":"")+'">'+money(t.amount,inc)+"</span></button></li>";
 }
 const sortedTx=mk=>txOf(mk).map((t,i)=>[t,i]).sort((a,b)=>b[0].date.localeCompare(a[0].date)||b[1]-a[1]).map(x=>x[0]);
 function viewHome(){
-  const c=calc(S.mk), tx=sortedTx(S.mk).slice(0,5);
-  const next=!S.demo&&S.settings.incomes.length&&!S.settings.fixed.length?'<div class="note"><p><strong>השלב הבא:</strong> להוסיף הוצאות קבועות כמו שכר דירה, ארנונה ומנויים, כדי שהמספר למעלה ישקף רק את מה שבאמת פנוי.</p><button class="btn small" data-act="add-fixed">הוספת הוצאה קבועה</button></div>':"";
-  return hero(c)+next+
+  const c=calc(S.mk), tx=sortedTx(S.mk).slice(0,5), gs=S.settings.goals||[], m=S.months[S.mk];
+  const roll=!S.demo&&c.rel<0&&c.left>=1&&gs.length&&m&&!m.rolled?'<div class="note"><p><strong>'+esc(monthLabel(S.mk))+" נסגר עם יתרה של "+money(Math.floor(c.left))+'.</strong> אפשר לסמן אותה כהפקדה לאחד היעדים.</p><button class="btn small" data-act="roll">להעביר ליעד</button></div>':"";
+  return greeting()+hero(c)+roll+setupCard()+insights(c)+recap(c)+weeks(c,S.mk)+
   '<section><div class="sec-h"><h2>איך הגענו למספר</h2><button class="link" data-view="fixed">עריכה</button></div><div class="panel"><ul class="ledger">'+
     '<li><span class="k">הכנסות החודש</span>'+money(c.income)+"</li>"+
     '<li><span class="k">הוצאות קבועות</span>'+money(-c.fixed)+"</li>"+
     '<li><span class="k">חיסכון חודשי</span>'+money(-c.saving)+"</li>"+
     '<li><span class="k">תקציב להוצאות משתנות</span>'+money(c.budget)+"</li></ul></div></section>"+
-  weeks(c,S.mk)+
   '<section><div class="sec-h"><h2>תנועות אחרונות</h2><button class="link" data-view="tx">לכל התנועות</button></div><div class="panel">'+
-    (S.loadingMonth?'<p class="empty">טוען את החודש…</p>':tx.length?'<ul class="list">'+tx.map(txRow).join("")+"</ul>":'<p class="empty">עוד אין תנועות בחודש הזה. אפשר להוסיף אחת ביד או לייבא קובץ מהבנק או מחברת האשראי במסך התנועות.</p>')+"</div></section>";
+    (S.loadingMonth?'<p class="empty">טוען את החודש…</p>':tx.length?'<ul class="list">'+tx.map(t=>txRow(t,true)).join("")+"</ul>":'<p class="empty">עוד אין תנועות בחודש הזה. אפשר להוסיף אחת בכפתור הפלוס, או לייבא קובץ מהבנק או מחברת האשראי במסך התנועות.</p>')+"</div></section>";
+}
+function viewGoals(){
+  const gs=S.settings.goals||[], sv=+S.settings.saving||0;
+  if(!gs.length)return'<section class="guide"><div class="sec-h" style="margin:0"><h2>יעדים</h2></div><div class="empty-card">'+lotus(0.3)+'<h3>לחסוך בשביל משהו</h3><p>חופשה, רכב, כרית ביטחון או מקדמה לדירה. מגדירים סכום יעד, מסמנים כל הפקדה, ורואים את ההתקדמות.</p><button class="btn" data-act="add-goal">יעד חדש</button></div></section>';
+  return'<section class="guide"><div class="sec-h" style="margin:0"><h2>יעדים</h2><button class="link" data-act="add-goal">יעד חדש</button></div><p class="lead">נחסך עד עכשיו '+money(sum(gs,g=>g.saved))+" מתוך "+money(sum(gs,g=>g.target))+".</p>"+
+  gs.map(g=>{
+    const p=g.target>0?Math.min(100,g.saved/g.target*100):0, left=Math.max(0,g.target-g.saved), done=g.target>0&&g.saved>=g.target, mo=sv>0&&left>0?Math.ceil(left/sv):0;
+    return'<div class="goal" style="--cc:var(--c'+g.c+')"><button class="goal-top" data-act="edit-goal" data-id="'+esc(g.id)+'"><span class="ring" style="--p:'+p.toFixed(1)+'"><b>'+Math.floor(p)+'%</b></span><span class="txt"><span class="t1">'+esc(g.name)+'</span><span class="t2">'+money(g.saved)+" מתוך "+money(g.target)+"</span></span>"+(done?'<span class="chip good">הושג</span>':"")+'</button><div class="goal-foot"><span class="t2">'+(done?"היעד הושג. כל הכבוד.":"נשארו "+money(left)+(mo?". בקצב החיסכון החודשי שלך: עוד "+(mo===1?"חודש":mo===2?"חודשיים":mo+" חודשים"):""))+'</span><button class="btn small" data-act="deposit" data-id="'+esc(g.id)+'">הפקדה</button></div></div>';
+  }).join("")+
+  '<p class="fineprint">היעדים הם מעקב בלבד. Lotus לא מעביר כסף, ואת ההפקדה עצמה עושים בבנק.</p></section>';
 }
 function txListHtml(){
   const q=S.q.trim().toLowerCase();
   const tx=sortedTx(S.mk).filter(t=>(!S.fcat||(S.fcat==="inc"?t.type==="inc":t.type!=="inc"&&t.cat===S.fcat))&&(!q||(t.desc||"").toLowerCase().includes(q)||(t.type!=="inc"&&catOf(t.cat).name.toLowerCase().includes(q))));
   if(S.loadingMonth)return'<p class="empty">טוען את החודש…</p>';
-  if(!tx.length)return'<p class="empty">'+(txOf(S.mk).length?"אין תנועות שמתאימות לסינון.":"עוד אין תנועות בחודש הזה.")+"</p>";
+  if(!tx.length)return txOf(S.mk).length?'<p class="empty">אין תנועות שמתאימות לסינון.</p>':'<div class="empty"><p style="margin:0">עוד אין תנועות בחודש הזה.</p><div class="empty-acts"><button class="btn small" data-act="add">הוספת תנועה</button><button class="btn ghost small" data-act="import">ייבוא מקובץ</button></div></div>';
   const groups={};tx.forEach(t=>(groups[t.date]=groups[t.date]||[]).push(t));
   const total=sum(tx.filter(t=>t.type!=="inc"),t=>t.amount);
-  return'<p class="t2" style="margin:0 0 4px">'+nTx(tx.length)+" · הוצאות "+money(total)+"</p>"+Object.keys(groups).map(d=>'<div class="day-h">'+esc(dayLabel(d))+'</div><div class="panel"><ul class="list">'+groups[d].map(txRow).join("")+"</ul></div>").join("");
+  return'<p class="t2" style="margin:0 0 4px">'+nTx(tx.length)+" · הוצאות "+money(total)+"</p>"+Object.keys(groups).map(d=>'<div class="day-h">'+esc(dayLabel(d))+'</div><div class="panel"><ul class="list">'+groups[d].map(t=>txRow(t)).join("")+"</ul></div>").join("");
 }
 function viewTx(){
   const chips=[["","הכול"]].concat(S.settings.cats.map(c=>[c.id,c.name]),[["inc","הכנסות"]]);
@@ -698,7 +924,7 @@ function viewCats(){
   '<p class="t2" style="margin:0 0 10px">סך התקציבים לקטגוריות '+money(totalB)+" מתוך "+money(Math.max(0,c.budget))+" שזמינים להוצאות משתנות.</p>"+
   '<div class="panel"><ul class="list">'+rows.map(r=>{
     const b=+r.k.budget||0, pct=b?Math.max(0,Math.min(100,r.sp/b*100)):(r.sp>0?100:0), over=b>0&&r.sp>b;
-    return'<li><button class="cat" '+(r.k.id?'data-act="edit-cat" data-id="'+esc(r.k.id)+'"':"disabled")+' style="--cc:var(--c'+r.k.c+')"><span class="cat-top"><span class="dot">'+esc(r.k.name.charAt(0))+'</span><span class="txt"><span class="t1">'+esc(r.k.name)+'</span><span class="t2">'+(b?(over?"חריגה של "+money(r.sp-b):"נשאר "+money(b-r.sp)):"ללא תקציב")+'</span></span><span class="amt">'+money(r.sp)+(b?' <span class="t2">/ '+money(b)+"</span>":"")+'</span></span><span class="track'+(over?" over":"")+'"><i style="width:'+pct.toFixed(1)+'%"></i></span></button></li>'}).join("")+"</ul></div></section>";
+    return'<li class="cat-li"><button class="cat" '+(r.k.id?'data-act="open-cat" data-id="'+esc(r.k.id)+'" aria-label="התנועות של '+esc(r.k.name)+'"':"disabled")+' style="--cc:var(--c'+r.k.c+')"><span class="cat-top"><span class="dot">'+esc(r.k.name.charAt(0))+'</span><span class="txt"><span class="t1">'+esc(r.k.name)+'</span><span class="t2">'+(b?(over?"חריגה של "+money(r.sp-b):"נשאר "+money(b-r.sp)):"ללא תקציב")+'</span></span><span class="amt">'+money(r.sp)+(b?' <span class="t2">/ '+money(b)+"</span>":"")+'</span></span><span class="track'+(over?" over":"")+'"><i style="width:'+pct.toFixed(1)+'%"></i></span></button>'+(r.k.id?'<button class="icon-btn" data-act="edit-cat" data-id="'+esc(r.k.id)+'" aria-label="עריכת הקטגוריה '+esc(r.k.name)+'">'+icon("pencil")+"</button>":"")+"</li>"}).join("")+"</ul></div></section>";
 }
 function viewFixed(){
   const c=calc(S.mk), st=S.settings;
@@ -723,7 +949,17 @@ const IC={
   cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
   bank:'<path d="M3 10 12 4l9 6"/><path d="M5 10v8M10 10v8M14 10v8M19 10v8M3 20h18"/>',
   gift:'<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18M12 9v12"/><path d="M12 9c-2-4-7-3-5 0M12 9c2-4 7-3 5 0"/>',
-  eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>'};
+  eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+  home:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  more:'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  pencil:'<path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/>',
+  trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  flame:'<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9Z"/>',
+  check:'<path d="M5 12l5 5 9-10"/>',
+  chart:'<path d="M5 20V10M11 20V4M17 20v-7M21 20H3"/>',
+  bulb:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3Z"/>'};
 const icon=n=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+"</svg>";
 const tip=(ic,c,title,body,yours)=>'<div class="tip" style="--cc:var(--c'+c+')"><span class="ic">'+icon(ic)+"</span><h3>"+title+"</h3><p>"+body+"</p>"+(yours?'<p class="yours">'+yours+"</p>":"")+"</div>";
 function viewTips(){
@@ -769,16 +1005,24 @@ function calcInvest(){
     (fee>0?'<div class="row"><span>דמי הניהול גרעו מהתוצאה <b>'+money(Math.round(gross-net))+'</b></span></div>':"");
 }
 function render(){
+  const app=$("#app");
   document.body.classList.toggle("gated",!!S.gate);
-  if(S.gate){$("#app").innerHTML=gateHtml();return}
+  const key=S.gate?"gate:"+S.gate:S.view+"|"+S.mk, entering=key!==lastKey;lastKey=key;
+  app.classList.remove("enter");
+  if(S.gate){app.innerHTML=gateHtml();if(entering&&motionOK){void app.offsetWidth;app.classList.add("enter")}return}
   $("#monthName").textContent=monthLabel(S.mk);
+  document.body.classList.toggle("nomonth",S.view==="goals"||S.view==="tips"||S.view==="invest");
   const ab=$("#acctBtn");ab.hidden=!(SA&&USER);if(USER)ab.textContent=((USER.email||"").trim().charAt(0)||"•");
-  document.querySelectorAll("#tabs button").forEach(b=>b.dataset.view===S.view?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
-  const v={home:viewHome,tx:viewTx,cats:viewCats,fixed:viewFixed,tips:viewTips,invest:viewInvest}[S.view]();
-  $("#app").innerHTML=notes()+v;
+  const inMore=S.view==="cats"||S.view==="fixed"||S.view==="tips"||S.view==="invest";
+  document.querySelectorAll("#tabs button,#bnav button").forEach(b=>{const on=b.dataset.view?b.dataset.view===S.view:b.dataset.act==="more"&&inMore;if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  const loading=SA&&S.checking&&!S.painted&&!S.loadFailed&&S.view!=="tips"&&S.view!=="invest";
+  const v=loading?'<div class="sk" style="height:190px" role="status" aria-label="טוען את הנתונים שלך"></div><div class="sk" style="height:120px"></div><div class="sk" style="height:220px"></div>':{home:viewHome,tx:viewTx,cats:viewCats,goals:viewGoals,fixed:viewFixed,tips:viewTips,invest:viewInvest}[S.view]();
+  app.innerHTML=(loading?"":notes())+v;
+  if(entering&&motionOK){void app.offsetWidth;app.classList.add("enter")}
   const cur=document.querySelector('#tabs [aria-current="page"]'),tb=$("#tabs");
   if(cur&&tb.scrollWidth>tb.clientWidth){const a=cur.getBoundingClientRect(),b=tb.getBoundingClientRect();if(a.left<b.left+8||a.right>b.right-8)tb.scrollLeft+=a.left-b.left-(b.width-a.width)/2}
   if(S.view==="invest")calcInvest();
+  if(S.view==="home")animateHero(entering);else lastHero=null;
 }
 /* Background refreshes must not steal focus from the search box. */
 function softRender(){
@@ -798,15 +1042,41 @@ function sheetTx(t){
   const names=[];const seen={};
   Object.keys(S.months).forEach(k=>S.months[k].tx.forEach(x=>{const d=(x.desc||"").trim();if(d&&!seen[d]&&names.length<150){seen[d]=1;names.push(d)}}));
   const catKnown=S.settings.cats.some(c=>c.id===e.cat);
+  const freq={};
+  Object.keys(S.months).forEach(k=>S.months[k].tx.forEach(x=>{const d=(x.desc||"").trim();if(d&&x.type!=="inc")freq[d]=(freq[d]||0)+1}));
+  const quick=t?[]:Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,6);
   openSheet('<form data-form="tx" data-id="'+esc(t?t.id:"")+'" novalidate><h3>'+(t?"עריכת תנועה":"תנועה חדשה")+'</h3>'+
   '<div class="seg" role="radiogroup" aria-label="סוג תנועה"><label><input type="radio" name="type" id="tx-type-exp" value="exp"'+(e.type!=="inc"?" checked":"")+'><span>הוצאה</span></label><label><input type="radio" name="type" id="tx-type-inc" value="inc"'+(e.type==="inc"?" checked":"")+'><span>הכנסה נוספת</span></label></div>'+
   '<label class="f">סכום בשקלים<input class="field amount-in" id="tx-amount" name="amount" inputmode="decimal" autocomplete="off" placeholder="0" value="'+esc(e.amount??"")+'" data-focus></label>'+
   '<label class="f">תיאור<input class="field" id="tx-desc" name="desc" maxlength="80" list="tx-names" autocomplete="off" placeholder="למשל: שופרסל" value="'+esc(e.desc||"")+'"></label><datalist id="tx-names">'+names.map(n=>'<option value="'+esc(n)+'"></option>').join("")+"</datalist>"+
+  (quick.length?'<div class="chips quick" id="tx-quick" aria-label="עסקים שחוזרים אצלך">'+quick.map(d=>'<button type="button" data-act="quick" data-desc="'+esc(d)+'">'+esc(d)+"</button>").join("")+"</div>":"")+
   '<div class="two"><label class="f" id="tx-cat-wrap">קטגוריה<select class="field" id="tx-cat" name="cat">'+(t&&!catKnown&&e.type!=="inc"?'<option value="'+esc(e.cat||"")+'" selected>ללא קטגוריה</option>':"")+S.settings.cats.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===e.cat?" selected":"")+">"+esc(c.name)+"</option>").join("")+'</select></label><label class="f">תאריך<input class="field" id="tx-date" name="date" type="date" value="'+esc(e.date)+'"></label></div>'+
   '<p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit">שמירה</button>'+(t?'<button class="btn danger" type="button" data-act="del-tx" data-id="'+esc(t.id)+'">מחיקה</button>':"")+'<button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
   syncTxType();
 }
-function syncTxType(){const w=$("#tx-cat-wrap"),inc=$("#tx-type-inc");if(w&&inc)w.style.visibility=inc.checked?"hidden":"visible"}
+function syncTxType(){const w=$("#tx-cat-wrap"),inc=$("#tx-type-inc"),q=$("#tx-quick");if(w&&inc)w.style.visibility=inc.checked?"hidden":"visible";if(q&&inc)q.hidden=inc.checked}
+function sheetMore(){
+  const item=(v,ic,label,sub)=>'<button type="button" class="more-item" data-view="'+v+'"><span class="ic">'+icon(ic)+'</span><span class="txt"><span class="t1">'+label+'</span><span class="t2">'+sub+"</span></span></button>";
+  openSheet('<form data-form="account" novalidate><h3>עוד</h3><div class="more-list">'+item("cats","chart","קטגוריות","לאן הלך הכסף, ותקציב לכל קטגוריה")+item("fixed","repeat","הכנסות והוצאות קבועות","משכורת, שכר דירה, מנויים וחיסכון חודשי")+item("tips","bulb","טיפים","הרגלים להתנהלות כלכלית")+item("invest","trend","השקעות","השקעה במדדים ומחשבון ריבית דריבית")+'</div><div class="acts"><button class="btn ghost" type="button" data-act="close">סגירה</button></div></form>');
+}
+function sheetGoal(g){
+  openSheet('<form data-form="goal" data-id="'+esc(g?g.id:"")+'" novalidate><h3>'+(g?"עריכת יעד":"יעד חדש")+'</h3>'+
+  '<label class="f">בשביל מה חוסכים<input class="field" id="goal-name" name="name" maxlength="40" autocomplete="off" placeholder="למשל: חופשה בקיץ" value="'+esc(g?g.name:"")+'" data-focus></label>'+
+  '<div class="two"><label class="f">סכום היעד בשקלים<input class="field" id="goal-target" name="target" inputmode="decimal" autocomplete="off" value="'+esc(g?g.target:"")+'"></label><label class="f">נחסך עד עכשיו<input class="field" id="goal-saved" name="saved" inputmode="decimal" autocomplete="off" placeholder="0" value="'+esc(g&&g.saved?g.saved:"")+'"></label></div>'+
+  '<p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit">שמירה</button>'+(g?'<button class="btn danger" type="button" data-act="del-goal" data-id="'+esc(g.id)+'">מחיקה</button>':"")+'<button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
+}
+function sheetDeposit(g){
+  openSheet('<form data-form="deposit" data-id="'+esc(g.id)+'" novalidate><h3>'+esc(g.name)+'</h3>'+
+  '<div class="seg" role="radiogroup" aria-label="סוג פעולה"><label><input type="radio" name="dir" id="dep-in" value="in" checked><span>הפקדה</span></label><label><input type="radio" name="dir" id="dep-out" value="out"><span>משיכה</span></label></div>'+
+  '<label class="f">סכום בשקלים<input class="field amount-in" id="dep-amount" name="amount" inputmode="decimal" autocomplete="off" placeholder="0" data-focus></label>'+
+  '<p class="hint">נחסך עד עכשיו '+money(g.saved)+" מתוך "+money(g.target)+'.</p><p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit">שמירה</button><button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
+}
+function sheetRoll(){
+  const c=calc(S.mk), gs=S.settings.goals||[];if(!gs.length)return;
+  openSheet('<form data-form="roll" data-mk="'+esc(S.mk)+'" novalidate><h3>העברת היתרה ליעד</h3><p class="hint">'+esc(monthLabel(S.mk))+" נסגר עם יתרה של "+money(Math.floor(c.left))+'. הסכום יתווסף ליעד שנבחר. את ההעברה עצמה עושים בבנק.</p>'+
+  '<div class="two"><label class="f">יעד<select class="field" id="roll-goal" name="goal">'+gs.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.name)+"</option>").join("")+'</select></label><label class="f">סכום בשקלים<input class="field" id="roll-amount" name="amount" inputmode="decimal" autocomplete="off" value="'+Math.floor(c.left)+'" data-focus></label></div>'+
+  '<p class="err" id="form-err" hidden></p><div class="acts"><button class="btn" type="submit">העברה ליעד</button><button class="btn ghost" type="button" data-act="close">ביטול</button></div></form>');
+}
 function sheetRec(kind,x){
   const inc=kind==="incomes";
   openSheet('<form data-form="rec" data-kind="'+kind+'" data-id="'+esc(x?x.id:"")+'" novalidate><h3>'+(x?"עריכת ":"")+(inc?"הכנסה קבועה":"הוצאה קבועה")+'</h3>'+
@@ -1061,8 +1331,12 @@ sheet.addEventListener("submit",e=>{
       let placed=false;
       for(const k in S.months){const a=S.months[k].tx,i=a.findIndex(x=>x.id===t.id);if(i>-1){if(k===mk){a[i]=t;placed=true}else{a.splice(i,1);save("m-"+k)}}}
       if(!placed)S.months[mk].tx.push(t);
-      save("m-"+mk);sheet.close();render();
-      if(mk!==S.mk)toast("נשמר בחודש "+monthLabel(mk));
+      S.flashId=t.id;save("m-"+mk);sheet.close();render();S.flashId=null;
+      const isNew=!f.dataset.id, first=isNew&&!S.demo&&sum(Object.keys(S.months),k=>S.months[k].tx.length)===1;
+      if(isNew&&navigator.vibrate)try{navigator.vibrate(12)}catch(e){}
+      if(first){celebrate();toast("התנועה הראשונה נשמרה. ככה מתחילים.")}
+      else if(mk!==S.mk)toast("נשמר בחודש "+monthLabel(mk));
+      else if(isNew&&type==="exp"&&mk===curKey){const c=calc(curKey);if(c.budget>0&&c.left>=0){const d=todayLeft(c);toast(d.left>=0?"נשמר. נשאר להיום "+money(Math.floor(d.left)).replace(/<[^>]+>/g,""):"נשמר. היום עברת את הקצב היומי ב-"+money(Math.ceil(-d.left)).replace(/<[^>]+>/g,""))}}
     });
     return;
   }
@@ -1080,7 +1354,36 @@ sheet.addEventListener("submit",e=>{
     if(c){c.name=name;c.budget=budget}else S.settings.cats.push({id:uid(),name,budget,c:S.settings.cats.length%8+1});
   }
   if(kind==="saving")S.settings.saving=parseAmt(fd.get("amount"))||0;
+  let after=null;
+  const gs=S.settings.goals||(S.settings.goals=[]);
+  const reached=g=>()=>{celebrate();toast("היעד הושג: "+g.name)};
+  if(kind==="goal"){
+    const name=String(fd.get("name")||"").trim(), target=parseAmt(fd.get("target")), saved=parseAmt(fd.get("saved"))||0;
+    if(!name)return formErr("צריך לתת שם ליעד.");
+    if(!target)return formErr("צריך להזין סכום יעד גדול מאפס.");
+    let g=gs.find(x=>x.id===f.dataset.id);const was=!!g&&g.saved>=g.target;
+    if(g){g.name=name;g.target=target;g.saved=saved}else{g={id:uid(),name,target,saved,c:[3,1,5,2,6,4,7,8][gs.length%8]};gs.push(g)}
+    if(!was&&g.saved>=g.target)after=reached(g);
+  }
+  if(kind==="deposit"){
+    const g=gs.find(x=>x.id===f.dataset.id), amt=parseAmt(fd.get("amount"));
+    if(!g)return sheet.close();
+    if(!amt)return formErr("צריך להזין סכום גדול מאפס.");
+    const out=fd.get("dir")==="out", before=g.saved;
+    if(out&&amt>g.saved)return formErr("אי אפשר למשוך יותר ממה שנחסך ביעד.");
+    g.saved=r2(g.saved+(out?-amt:amt));
+    if(before<g.target&&g.saved>=g.target)after=reached(g);
+    else after=()=>toast(out?"המשיכה נרשמה":"ההפקדה נרשמה. נשארו "+money(Math.max(0,g.target-g.saved)).replace(/<[^>]+>/g,"")+" ליעד");
+  }
+  if(kind==="roll"){
+    const g=gs.find(x=>x.id===fd.get("goal")), amt=parseAmt(fd.get("amount")), mk=f.dataset.mk, m=S.months[mk];
+    if(!g||!m)return sheet.close();
+    if(!amt)return formErr("צריך להזין סכום גדול מאפס.");
+    const before=g.saved;g.saved=r2(g.saved+amt);m.rolled=amt;save("m-"+mk);
+    after=before<g.target&&g.saved>=g.target?reached(g):()=>{celebrate();toast("היתרה נוספה ליעד "+g.name)};
+  }
   saveSettings();sheet.close();render();
+  if(after)after();
 });
 function saveSettings(){save("settings");if(!S.demo&&stampRec())save("m-"+curKey)}
 
@@ -1088,7 +1391,7 @@ function saveSettings(){save("settings");if(!S.demo&&stampRec())save("m-"+curKey
 let toastTimer=null,undoFn=null;
 function toast(msg,undo){
   undoFn=undo||null;
-  const el=$("#toast");el.innerHTML='<div role="status"><span>'+esc(msg)+"</span>"+(undo?'<button data-act="undo">ביטול המחיקה</button>':"")+"</div>";el.hidden=false;
+  const el=$("#toast");el.innerHTML='<div role="status"><span>'+esc(msg)+"</span>"+(undo?'<button data-act="undo">ביטול</button>':"")+"</div>";el.hidden=false;
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.hidden=true;undoFn=null},undo?7000:3200);
 }
 
@@ -1099,10 +1402,10 @@ function canEdit(){
   if(S.loadFailed){toast("אין חיבור לנתונים השמורים. אפשר לנסות שוב בראש הדף.");return false}
   return true;
 }
-const EDITING={add:1,"edit-tx":1,"add-income":1,"add-fixed":1,"edit-rec":1,"add-cat":1,"edit-cat":1,"edit-saving":1,start:1,"import":1};
+const EDITING={add:1,"edit-tx":1,"add-income":1,"add-fixed":1,"edit-rec":1,"add-cat":1,"edit-cat":1,"edit-saving":1,start:1,"import":1,"add-goal":1,"edit-goal":1,deposit:1,roll:1,"make-fixed":1};
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-act],[data-view]");if(!b)return;
-  if(b.dataset.view){S.view=b.dataset.view;render();window.scrollTo(0,0);return}
+  if(b.dataset.view){if(sheet.open)sheet.close();S.view=b.dataset.view;render();window.scrollTo(0,0);return}
   const a=b.dataset.act,id=b.dataset.id;
   if(EDITING[a]&&!canEdit())return;
   if(a==="prev"||a==="next"){S.mk=shiftMonth(S.mk,a==="prev"?-1:1);render();ensureMonth(S.mk)}
@@ -1117,6 +1420,22 @@ document.addEventListener("click",e=>{
   else if(a==="edit-cat"){const c=S.settings.cats.find(q=>q.id===id);if(c)sheetCat(c)}
   else if(a==="del-cat"){const arr=S.settings.cats,i=arr.findIndex(q=>q.id===id);if(i<0)return;const c=arr.splice(i,1)[0];if(S.fcat===c.id)S.fcat="";saveSettings();sheet.close();render();toast("הקטגוריה נמחקה. התנועות שלה נשארו ללא קטגוריה.",()=>{const cur=S.settings.cats;cur.splice(Math.min(i,cur.length),0,c);saveSettings();render()})}
   else if(a==="edit-saving")sheetSaving();
+  else if(a==="more")sheetMore();
+  else if(a==="open-cat"){S.fcat=id||"";S.q="";S.view="tx";render();window.scrollTo(0,0)}
+  else if(a==="add-goal")sheetGoal(null);
+  else if(a==="edit-goal"){const g=(S.settings.goals||[]).find(q=>q.id===id);if(g)sheetGoal(g)}
+  else if(a==="deposit"){const g=(S.settings.goals||[]).find(q=>q.id===id);if(g)sheetDeposit(g)}
+  else if(a==="del-goal"){const arr=S.settings.goals||[],i=arr.findIndex(q=>q.id===id);if(i<0)return;const g=arr.splice(i,1)[0];saveSettings();sheet.close();render();toast("היעד נמחק: "+g.name,()=>{const cur=S.settings.goals||(S.settings.goals=[]);cur.splice(Math.min(i,cur.length),0,g);saveSettings();render()})}
+  else if(a==="roll")sheetRoll();
+  else if(a==="hide-setup"){ls.set("hideSetup",1);render()}
+  else if(a==="quick"){const d=b.dataset.desc||"",i=$("#tx-desc"),s=$("#tx-cat"),g=guessCat(d,true);if(i)i.value=d;if(g&&s)s.value=g;const am=$("#tx-amount");if(am)am.focus()}
+  else if(a==="skip-rec"){const r=findTx(id);if(r){const l=ls.get("skipRec")||[];l.push(lower(r.t.desc));ls.set("skipRec",l.slice(-200))}render()}
+  else if(a==="make-fixed"){
+    const r=findTx(id);if(!r)return;
+    const arr=S.months[r.k].tx,i=arr.indexOf(r.t),fx={id:uid(),name:r.t.desc,amount:r.t.amount,day:+r.t.date.slice(8)};
+    arr.splice(i,1);S.settings.fixed.push(fx);saveSettings();save("m-"+r.k);render();
+    toast("נוסף להוצאות הקבועות והוסר מתנועות החודש",()=>{const j=S.settings.fixed.findIndex(q=>q.id===fx.id);if(j>-1)S.settings.fixed.splice(j,1);const cur=S.months[r.k];if(cur)cur.tx.splice(Math.min(i,cur.tx.length),0,r.t);saveSettings();save("m-"+r.k);render()});
+  }
   else if(a==="fcat"){S.fcat=id||"";render()}
   else if(a==="import"){if(S.demo)return toast("כדי לייבא, קודם לוחצים על ״להתחיל עם הנתונים שלי״");sheetImport()}
   else if(a==="export")exportCsv();
@@ -1136,6 +1455,12 @@ document.addEventListener("click",e=>{
   else if(a==="resave"){S.saveFailed=false;save("settings");Object.keys(S.months).forEach(k=>save("m-"+k));render()}
   else if(a==="start"){S.demo=false;S.settings=emptySettings();S.months={[curKey]:{tx:[]}};S.mk=curKey;S.view="home";stampRec();save("settings");save("m-"+curKey);render();sheetRec("incomes",null)}
 });
+document.addEventListener("keydown",e=>{
+  if(e.key!=="n"&&e.key!=="N"&&e.key!=="מ")return;
+  if(e.ctrlKey||e.metaKey||e.altKey||S.gate||sheet.open)return;
+  const t=e.target;if(t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable))return;
+  if(canEdit()){e.preventDefault();sheetTx(null)}
+});
 document.addEventListener("input",e=>{
   if(/^inv-/.test(e.target.id))return calcInvest();
   if(e.target.id!=="search")return;
@@ -1143,7 +1468,8 @@ document.addEventListener("input",e=>{
   const cur=$("#txlist");if(cur)cur.innerHTML=txListHtml();
 });
 
-window.__lotus={S,extractRows,parseCSV,parseDate,parseNum,calc,guessCat,futureValue};
+$("#bnav").innerHTML='<button data-view="home">'+icon("home")+'<span>תזרים</span></button><button data-view="tx">'+icon("list")+'<span>תנועות</span></button><button class="bnav-add" data-act="add" aria-label="הוספת תנועה">'+icon("plus")+'</button><button data-view="goals">'+icon("target")+'<span>יעדים</span></button><button data-act="more">'+icon("more")+'<span>עוד</span></button>';
+window.__lotus={S,extractRows,parseCSV,parseDate,parseNum,calc,guessCat,futureValue,streak,recurringCandidate};
 boot();
 })();
 </script>
